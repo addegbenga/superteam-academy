@@ -1,0 +1,53 @@
+// export const editorTheme = {
+//   base: "vs-dark",
+//   inherit: true,
+//   rules: [
+//     { token: "keyword", foreground: "569cd6", fontStyle: "bold" },
+//     { token: "type", foreground: "4ec9b0" },
+//     { token: "type.identifier", foreground: "4ec9b0" },
+//     { token: "constant", foreground: "569cd6" },
+//     { token: "string", foreground: "ce9178" },
+//     { token: "string.escape", foreground: "d7ba7d" },
+//     { token: "comment", foreground: "6a9955", fontStyle: "italic" },
+//     { token: "annotation", foreground: "dcdcaa" },
+//     { token: "number", foreground: "b5cea8" },
+//     { token: "number.hex", foreground: "b5cea8" },
+//     { token: "number.float", foreground: "b5cea8" },
+//     { token: "operator", foreground: "d4d4d4" },
+//     { token: "delimiter", foreground: "d4d4d4" },
+//     { token: "identifier", foreground: "9cdcfe" },
+//   ],
+//   colors: {
+//     "editor.background": "#0a0a0a",
+//     "editor.foreground": "#fafafa",
+//     "editorLineNumber.foreground": "#858585",
+//     "editorLineNumber.activeForeground": "#c6c6c6",
+//     "editor.selectionBackground": "#264f78",
+//     "editor.inactiveSelectionBackground": "#3a3d41",
+//   },
+// };
+
+export const editorTheme = {
+  base: "vs-dark",
+  inherit: true,
+  rules: [
+    { token: "comment", foreground: "546E7A", fontStyle: "italic" },
+    { token: "keyword", foreground: "C792EA" },
+    { token: "string", foreground: "ECC48D" },
+    { token: "number", foreground: "F78C6C" },
+    { token: "type", foreground: "82AAFF" },
+    { token: "function", foreground: "82AAFF" },
+  ],
+  colors: {
+    "editor.background": "#0a0a0a",
+    "editor.foreground": "#fafafa",
+    "editorCursor.foreground": "#82AAFF",
+    "editor.lineHighlightBackground": "#1c2a3a",
+    "editorLineNumber.foreground": "#546E7A",
+    "editorLineNumber.activeForeground": "#FFFFFF",
+    "editor.selectionBackground": "#264F78",
+    "editor.inactiveSelectionBackground": "#1c2a3a",
+    "editorIndentGuide.background": "#1c2a3a",
+    "editorIndentGuide.activeBackground": "#546E7A",
+  },
+};
