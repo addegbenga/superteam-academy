@@ -1,0 +1,1 @@
+export const sanity_cdn_base = process.env.NEXT_PUBLIC_SANITY_CDN_BASE || ""

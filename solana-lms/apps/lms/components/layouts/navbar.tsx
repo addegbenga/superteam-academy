@@ -14,7 +14,7 @@ export function Navbar() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const navItems = [
-    { label: "Courses", href: "/courses" },
+    { label: "Courses", href: "/course" },
     { label: "Leaderboard", href: "/leaderboard" },
     { label: "Profile", href: "/profile" },
   ];

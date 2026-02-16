@@ -1,8 +1,7 @@
 import { Space_Grotesk } from "next/font/google";
 import "@workspace/ui/globals.css";
-import { Providers } from "@/components/providers";
+import { GlobalProviders, ThemeProviders } from "@/components/providers";
 import { Toaster } from "@workspace/ui/components/sonner";
-import { GlobalProviders } from "@/components/global-providers";
 
 const space_grotesk = Space_Grotesk({
   subsets: ["latin"],
@@ -18,7 +17,7 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <body className={`${space_grotesk.variable} font-sans antialiased `}>
         <GlobalProviders>
-          <Providers>{children}</Providers>
+          <ThemeProviders>{children}</ThemeProviders>
         </GlobalProviders>
         <Toaster />
       </body>

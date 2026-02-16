@@ -201,11 +201,11 @@ function CourseSidebar() {
     >
       <div className="h-full flex flex-col">
         <div className="p-4 border-b border-white/5">
-          <p className="font-medium tracking-tight text-xs mb-1">
+          <p className="font-medium tracking-tight text-sm mb-1.5">
             Course progress
           </p>
           <Progress value={12} className="h-1 bg-white/10" />
-          <p className="text-xs tracking-tight text-muted-foreground mt-1">
+          <p className="text-sm tracking-tight text-muted-foreground mt-1.5">
             12% Complete
           </p>
         </div>

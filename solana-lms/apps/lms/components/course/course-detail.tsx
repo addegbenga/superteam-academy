@@ -28,18 +28,21 @@ import {
 import { Badge } from "@workspace/ui/components/badge";
 import Image from "next/image";
 import { Card, CardContent, CardHeader } from "@workspace/ui/components/card";
+import { MarkdownViewer } from "../markdown";
 import Link from "next/link";
 import { useParams } from "next/navigation";
-import {
-  INSTRUCTORS,
-  LEARNING_OBJECTIVES,
-  SYLLABUS,
-  TESTIMONIALS,
-} from "@/lib/data";
+import { SYLLABUS, TESTIMONIALS } from "@/lib/data";
+import { useGetCourseById } from "@/hooks/use-course";
+import type { Course, Instructor, Lesson, Module } from "@workspace/sanity-client";
+
+type IProps = {
+  courseId?: string;
+  data: Course;
+};
 
 // ==================== COMPONENTS ====================
 
-function CourseHero({ courseId }: { courseId: string }) {
+function CourseHero({ courseId, data }: IProps) {
   return (
     <div className="px-4">
       <div className="flex flex-col lg:flex-row gap-12 items-start">
@@ -50,7 +53,7 @@ function CourseHero({ courseId }: { courseId: string }) {
               <Image
                 width={500}
                 height={500}
-                src="https://images.unsplash.com/photo-1639762681485-074b7f938ba0?auto=format&fit=crop&q=80&w=800"
+                src={data?.thumbnail as any}
                 alt="Solana Fundamentals"
                 className="w-full h-full object-cover"
               />
@@ -70,14 +73,12 @@ function CourseHero({ courseId }: { courseId: string }) {
               Courses
             </span>
             <ChevronRight className="w-4 h-4" />
-            <span className="text-primary tracking-tight">
-              Solana Fundamentals
-            </span>
+            <span className="text-primary tracking-tight">{data?.title}</span>
           </div>
 
           <div className="flex items-center justify-between">
             <h1 className="text-4xl tracking-tighter line-clamp-1 font-bold">
-              Solana Fundamentals
+              {data?.title}
             </h1>
             <Button
               variant="ghost"
@@ -89,25 +90,22 @@ function CourseHero({ courseId }: { courseId: string }) {
           </div>
 
           <p className="text-muted-foreground line-clamp-3 leading-relaxed max-w-3xl">
-            Solana Fundamentals is a beginner-friendly yet rigorous course
-            designed to give you a solid grasp of blockchain fundamentals.
-            You'll explore how blockchains work, what smart contracts do, how to
-            send on-chain transactions, and why concepts like decentralization
-            and scalability matter.
+            {data?.description}
           </p>
 
           <div className="flex flex-wrap gap-6 text-sm font-medium text-muted-foreground border-y border-white/5 py-2">
             <div className="flex items-center gap-2">
-              <Clock className="w-4 h-4 text-primary" /> 6hrs
+              <Clock className="w-4 h-4 text-primary" /> {data?.duration}hrs
             </div>
             <div className="flex items-center gap-2">
-              <BookOpen className="w-4 h-4 text-primary" /> 58 lessons
+              <BookOpen className="w-4 h-4 text-primary" />{" "}
+              {data?.modules?.length} lessons
             </div>
             <div className="flex items-center gap-2">
-              <Globe className="w-4 h-4 text-primary" /> 20+ languages
+              <Globe className="w-4 h-4 text-primary" /> 2+ languages
             </div>
-            <div className="flex items-center gap-2">
-              <Zap className="w-4 h-4 text-primary" /> Beginner
+            <div className="flex items-center gap-2 capitalize">
+              <Zap className="w-4 h-4 text-primary " /> {data?.difficulty}
             </div>
           </div>
 
@@ -122,20 +120,40 @@ function CourseHero({ courseId }: { courseId: string }) {
             </Link>
             <div className="flex items-center gap-4">
               <div className="flex -space-x-2">
-                {[1, 2, 3].map((i) => (
-                  <div
-                    key={i}
-                    className="w-8 h-8 rounded-full border-2 border-background bg-muted overflow-hidden ring-2 ring-primary/10"
-                  >
-                    <img
-                      src={`https://i.pravatar.cc/100?img=${i + 20}`}
-                      alt="Student"
-                    />
-                  </div>
-                ))}
+                {(() => {
+                  const total = data?.stats?.totalEnrollments ?? 0;
+                  const displayCount = total > 0 ? Math.min(total, 5) : 3;
+
+                  return (
+                    <>
+                      {Array.from({ length: displayCount }).map((_, ind) => (
+                        <div
+                          key={ind}
+                          className="w-8 h-8 rounded-full border-2 border-background bg-muted overflow-hidden ring-2 ring-primary/10"
+                        >
+                          <img
+                            src={`https://i.pravatar.cc/100?img=${ind + 20}`}
+                            alt="Student"
+                            className="w-full h-full object-cover"
+                          />
+                        </div>
+                      ))}
+
+                      {total > 5 && (
+                        <div className="w-8 h-8 flex items-center justify-center rounded-full border-2 border-background bg-primary text-primary-foreground text-xs font-semibold">
+                          +{total - 5}
+                        </div>
+                      )}
+                    </>
+                  );
+                })()}
               </div>
+
               <span className="text-sm font-medium text-muted-foreground">
-                110,000+ students enrolled
+                {data?.stats?.totalEnrollments &&
+                data.stats.totalEnrollments > 0
+                  ? `${data.stats.totalEnrollments} Students enrolled`
+                  : `1+ Students enrolled`}
               </span>
             </div>
           </div>
@@ -145,15 +163,15 @@ function CourseHero({ courseId }: { courseId: string }) {
   );
 }
 
-function LearningObjectives() {
+function LearningObjectives({ data }: IProps) {
   return (
     <section className="space-y-6">
       <h3 className="text-xl tracking-tight font-bold">What you'll learn</h3>
       <div className="grid md:grid-cols-2 gap-y-4 gap-x-8">
-        {LEARNING_OBJECTIVES.map((item, i) => (
+        {data?.learningObjectives?.map((item, i) => (
           <div key={i} className="flex items-start gap-3">
             <CheckCircle2 className="w-5 h-5 text-primary shrink-0 mt-0.5" />
-            <span className="text-muted-foreground">{item}</span>
+            <span className="text-muted-foreground">{item.objective}</span>
           </div>
         ))}
       </div>
@@ -161,28 +179,13 @@ function LearningObjectives() {
   );
 }
 
-function CourseDescription() {
+function CourseDescription({ data }: IProps) {
   return (
     <section className="space-y-4">
       <h3 className="text-xl tracking-tight font-bold">Course description</h3>
-      <div className="prose prose-invert max-w-none text-muted-foreground leading-relaxed">
-        <p>
-          Build your foundational blockchain knowledge and unlock your future as
-          a blockchain developer or web3 professional. The all-new Blockchain
-          Basics is a comprehensive, beginner-friendly course designed to take
-          you from zero to proficient in blockchain fundamentals in just a few
-          hours. You'll gain a deep understanding of how decentralized
-          technologies work, from sending your first transaction to grasping the
-          core architecture of blockchain systems.
-        </p>
-        <p>
-          This is the most up-to-date and practical blockchain fundamentals
-          course available anywhere. It teaches you what actually matters: how
-          blockchain networks operate, what wallets do, how smart contracts
-          create trust minimized agreements, and why decentralization changes
-          the game for ownership and innovation.
-        </p>
-      </div>
+      <MarkdownViewer
+        markdown={data?.fullDescription?.[0]?.children?.[0]?.text as string}
+      />
       <Button
         variant="link"
         className="text-primary p-0 h-auto font-bold flex items-center gap-1 group"
@@ -194,21 +197,22 @@ function CourseDescription() {
   );
 }
 
-function InstructorsSection() {
+function InstructorsSection({ data }: IProps) {
+  const instructors = data?.instructors as unknown as Instructor[];
   return (
     <section className="space-y-6">
       <h3 className="text-xl tracking-tight font-bold">
         Meet your instructors
       </h3>
       <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-        {INSTRUCTORS.map((ins) => (
+        {instructors?.map((ins: Instructor) => (
           <div
-            key={ins.name}
+            key={ins._id}
             className="flex items-center gap-4 p-4 rounded-xl bg-white/5 border border-white/5 hover:border-primary/20 transition-all group"
           >
             <Avatar className="w-14 h-14 border border-white/10 group-hover:border-primary/50">
-              <AvatarImage src={ins.avatar} />
-              <AvatarFallback>{ins.name[0]}</AvatarFallback>
+              <AvatarImage src={ins.avatar as unknown as string} />
+              <AvatarFallback>{ins.name}</AvatarFallback>
             </Avatar>
             <div>
               <div className="font-bold text-white group-hover:text-primary transition-colors">
@@ -218,8 +222,12 @@ function InstructorsSection() {
                 {ins.role}
               </div>
               <div className="flex gap-2 transition-opacity">
-                <Twitter className="w-3 h-3 cursor-pointer hover:text-primary" />
-                <Linkedin className="w-3 h-3 cursor-pointer hover:text-primary" />
+                <Link href={ins?.social?.twitter as unknown as string}>
+                  <Twitter className="w-3 h-3 cursor-pointer hover:text-primary" />
+                </Link>
+                <Link href={ins?.social?.linkedin as unknown as string}>
+                  <Linkedin className="w-3 h-3 cursor-pointer hover:text-primary" />
+                </Link>
               </div>
             </div>
           </div>
@@ -229,12 +237,17 @@ function InstructorsSection() {
   );
 }
 
-function SyllabusSection() {
+function SyllabusSection({ data}: IProps) {
+const modules = data?.modules as unknown as Array<Omit<Module, 'lessons'> & { lessons: Lesson[] }>;
+const moduleDurations = modules?.map((module) => 
+  module.lessons?.reduce((total, lesson) => total + (lesson.duration || 0), 0) || 0
+);
+
   return (
     <section>
       <h3 className="text-xl tracking-tight font-bold mb-6">Syllabus</h3>
       <div className="space-y-4">
-        {SYLLABUS.map((module, i) => (
+        {modules?.map((module, i) => (
           <Accordion
             key={i}
             type="single"
@@ -254,17 +267,17 @@ function SyllabusSection() {
                   </div>
                   <div className="flex items-center gap-4 text-xs text-muted-foreground">
                     <span className="flex items-center gap-1">
-                      <Clock className="w-3 h-3" /> {module.duration}
+                      <Clock className="w-3 h-3" /> {moduleDurations}
                     </span>
                     <span className="flex items-center gap-1">
-                      <BookOpen className="w-3 h-3" /> {module.lessons} lessons
+                      <BookOpen className="w-3 h-3" /> {module.lessons.length} lessons
                     </span>
                   </div>
                 </div>
               </AccordionTrigger>
               <AccordionContent className="px-6 pb-6 pt-2">
                 <div className="space-y-1 ml-12 border-l border-white/10 pl-6">
-                  {module.items.map((item, j) => (
+                  {module.lessons.map((item, j) => (
                     <div
                       key={j}
                       className="flex items-center justify-between py-2 group cursor-pointer"
@@ -276,11 +289,11 @@ function SyllabusSection() {
                           <BookOpen className="w-3.5 h-3.5 text-muted-foreground group-hover:text-primary transition-colors" />
                         )}
                         <span className="text-muted-foreground group-hover:text-white transition-colors">
-                          {item}
+                          {item.title}
                         </span>
                       </div>
                       <div className="text-xs text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity">
-                        5:00
+                        {item.duration}
                       </div>
                     </div>
                   ))}
@@ -294,7 +307,7 @@ function SyllabusSection() {
   );
 }
 
-function TestimonialsSection() {
+function TestimonialsSection({}: IProps) {
   return (
     <section className="space-y-10 pt-8">
       <div className="space-y-2">
@@ -332,7 +345,7 @@ function TestimonialsSection() {
   );
 }
 
-function CourseSidebar() {
+function CourseSidebar({}: IProps) {
   return (
     <div className="lg:w-87.5 shrink-0 space-y-6 sticky top-24 self-start">
       <Card className="border-white/10 bg-white/5 backdrop-blur-sm overflow-hidden border-t-primary/20 border-t-2">
@@ -389,25 +402,29 @@ function CourseSidebar() {
 
 export default function CourseDetail() {
   const params = useParams();
+  const data = useGetCourseById(params.courseId as string);
 
   return (
     <div className="bg-background container mx-auto max-w-7xl pt-12 px-4 pb-24">
       {/* Course Hero Section */}
-      <CourseHero courseId={params.courseId as string} />
+      <CourseHero
+        data={data.data as Course}
+        courseId={params.courseId as string}
+      />
 
       {/* Content Tabs / Main Layout */}
       <div className="container mx-auto px-4 mt-24">
         <div className="flex flex-col lg:flex-row gap-12">
           {/* Left Column */}
           <div className="flex-1 space-y-16">
-            <LearningObjectives />
-            <CourseDescription />
-            <InstructorsSection />
-            <SyllabusSection />
-            <TestimonialsSection />
+            <LearningObjectives data={data.data as Course} />
+            <CourseDescription data={data.data as Course} />
+            <InstructorsSection data={data.data as Course} />
+            <SyllabusSection data={data.data as Course} />
+            <TestimonialsSection data={data.data as Course} />
           </div>
           {/* Right: Sidebar Cards */}
-          <CourseSidebar />
+          <CourseSidebar data={data.data as Course} />
         </div>
       </div>
     </div>

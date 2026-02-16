@@ -83,9 +83,16 @@ export function useCourse(slug: string) {
 }
 
 export const useGetAllCourses = () => {
-  // Fetch user progress
   return useQuery({
     queryKey: queryKeys.courses.all,
     queryFn: () => queryBuilder.getCourses(),
+  });
+};
+
+export const useGetCourseById = (slug:string) => {
+  return useQuery({
+    queryKey: queryKeys.courses.detail(slug),
+    queryFn: () => queryBuilder.getCourseBySlug(slug),
+    enabled: !!slug
   });
 };

@@ -1,5 +1,4 @@
 "use client"
-import { useGetAllCourses } from "@/hooks/use-course";
 import { Badge } from "@workspace/ui/components/badge";
 import { Button } from "@workspace/ui/components/button";
 import {
@@ -22,7 +21,7 @@ import {
 import Link from "next/link";
 
 export default function DashboardHome() {
-  const {} = useGetAllCourses();
+
   return (
     <div className="container max-w-7xl py-10 mx-auto px-4 ">
       <div className="flex flex-col md:flex-row gap-8">
