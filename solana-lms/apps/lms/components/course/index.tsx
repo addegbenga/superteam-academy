@@ -1,6 +1,6 @@
-"use client"
-import { useGetAllCourses } from "@/hooks/use-course";
-import { sanity_cdn_base } from "@/lib/constant";
+"use client";
+import { courseQueries } from "@/lib/queries";
+import { useQuery } from "@tanstack/react-query";
 import { Badge } from "@workspace/ui/components/badge";
 import { Button } from "@workspace/ui/components/button";
 import { Input } from "@workspace/ui/components/input";
@@ -8,11 +8,15 @@ import { Progress } from "@workspace/ui/components/progress";
 import { Search, Filter, Clock, Zap, AlertCircle, Loader2 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-
-
+import { useSearchParams } from "next/navigation";
 
 export default function Courses() {
-  const { data, isLoading, isError, error, refetch } = useGetAllCourses();
+
+  const searchParams = useSearchParams();
+  const language = searchParams.get("lang") as string;
+  const { data, isPending, isError, error, refetch } = useQuery(
+    courseQueries.all(language)
+  );
 
   return (
     <div className="container max-w-7xl mx-auto px-4 py-12">
@@ -32,13 +36,13 @@ export default function Courses() {
             <Input
               placeholder="Search courses..."
               className="pl-10 h-11 bg-white/5 border-white/10"
-              disabled={isLoading}
+              disabled={isPending}
             />
           </div>
-          <Button 
-            variant="outline" 
+          <Button
+            variant="outline"
             className="border-white/10 h-11 bg-white/5"
-            disabled={isLoading}
+            disabled={isPending}
           >
             <Filter className="w-4 h-4 mr-2" /> Filter
           </Button>
@@ -46,7 +50,7 @@ export default function Courses() {
       </div>
 
       {/* Loading State */}
-      {isLoading && (
+      {isPending && (
         <div className="flex flex-col items-center justify-center py-20">
           <Loader2 className="w-12 h-12 animate-spin text-primary mb-4" />
           <p className="text-muted-foreground text-lg">Loading courses...</p>
@@ -60,8 +64,9 @@ export default function Courses() {
             <AlertCircle className="w-12 h-12 text-destructive" />
           </div>
           <h2 className="text-2xl font-bold mb-2">Failed to Load Courses</h2>
-          <p className="text-muted-foreground text-center mb-6 max-w-md">
-            {error?.message || "Something went wrong while fetching the courses. Please try again."}
+          <p className="text-muted-foreground truncate text-center mb-6 max-w-md">
+            {error?.message ||
+              "Something went wrong while fetching the courses. Please try again."}
           </p>
           <Button onClick={() => refetch()} variant="default">
             Try Again
@@ -70,7 +75,7 @@ export default function Courses() {
       )}
 
       {/* Success State - Course Grid */}
-      {!isLoading && !isError && (
+      {!isPending && !isError && (
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
           {data?.map((course) => (
             <Link key={course._id} href={`/course/${course.slug?.current}`}>

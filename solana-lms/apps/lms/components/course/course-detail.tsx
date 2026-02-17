@@ -28,12 +28,23 @@ import {
 import { Badge } from "@workspace/ui/components/badge";
 import Image from "next/image";
 import { Card, CardContent, CardHeader } from "@workspace/ui/components/card";
-import { MarkdownViewer } from "../markdown";
 import Link from "next/link";
-import { useParams } from "next/navigation";
-import { SYLLABUS, TESTIMONIALS } from "@/lib/data";
-import { useGetCourseById } from "@/hooks/use-course";
-import type { Course, Instructor, Lesson, Module } from "@workspace/sanity-client";
+import { useParams, useRouter, useSearchParams } from "next/navigation";
+
+import type {
+  Achievement,
+  Course,
+  Instructor,
+  Lesson,
+  Module,
+  Review,
+} from "@workspace/sanity-client";
+
+import { useQuery } from "@tanstack/react-query";
+import { courseQueries, progressQueries } from "@/lib/queries/";
+import { useCourse } from "@/hooks/use-course";
+import type { Progress } from "@workspace/learning-service";
+import { PortableTextRenderer } from "../markdown";
 
 type IProps = {
   courseId?: string;
@@ -43,6 +54,18 @@ type IProps = {
 // ==================== COMPONENTS ====================
 
 function CourseHero({ courseId, data }: IProps) {
+  const userId = "1234";
+  const navigation = useRouter();
+  const { enroll } = useCourse(courseId as string);
+  const progress = useQuery(
+    progressQueries.course(userId, data?._id as string),
+  );
+
+  const modules = data?.modules as unknown as Array<
+    Omit<Module, "lessons"> & { lessons: Lesson[] }
+  >;
+
+
   return (
     <div className="px-4">
       <div className="flex flex-col lg:flex-row gap-12 items-start">
@@ -110,14 +133,35 @@ function CourseHero({ courseId, data }: IProps) {
           </div>
 
           <div className="flex items-center gap-8">
-            <Link href={`${courseId}/learn`}>
-              <Button
-                size="lg"
-                className="font-bold px-4 shadow-[0_0_20px_-5px_rgba(20,241,149,0.5)] transition-all hover:scale-105 active:scale-95"
-              >
-                Start learning now
-              </Button>
-            </Link>
+            <Button
+              disabled={progress.isPending}
+              onClick={() => {
+                if (!progress?.data?.courseId) {
+                  enroll.mutate(undefined, {
+                    onSuccess() {
+                      navigation.push(
+                        `${courseId}/${modules[0]?.lessons?.[0]?.slug?.current}`,
+                      );
+                    },
+                  });
+                } else {
+                  //Ideally navigate the user to their current lesson progress
+                  navigation.push(
+                    `${courseId}/${modules[0]?.lessons?.[0]?.slug?.current}`,
+                  );
+                }
+              }}
+              size="lg"
+              className="font-bold w-40 px-4 shadow-[0_0_20px_-5px_rgba(20,241,149,0.5)] transition-all hover:scale-105 active:scale-95"
+            >
+              {progress.isPending
+                ? "Loading..."
+                : progress?.data?.courseId
+                  ? " Continue learning "
+                  : "Start learning now"}
+            </Button>
+
+            {/* </Link> */}
             <div className="flex items-center gap-4">
               <div className="flex -space-x-2">
                 {(() => {
@@ -183,9 +227,7 @@ function CourseDescription({ data }: IProps) {
   return (
     <section className="space-y-4">
       <h3 className="text-xl tracking-tight font-bold">Course description</h3>
-      <MarkdownViewer
-        markdown={data?.fullDescription?.[0]?.children?.[0]?.text as string}
-      />
+      <PortableTextRenderer content={data?.fullDescription as any} />
       <Button
         variant="link"
         className="text-primary p-0 h-auto font-bold flex items-center gap-1 group"
@@ -237,11 +279,17 @@ function InstructorsSection({ data }: IProps) {
   );
 }
 
-function SyllabusSection({ data}: IProps) {
-const modules = data?.modules as unknown as Array<Omit<Module, 'lessons'> & { lessons: Lesson[] }>;
-const moduleDurations = modules?.map((module) => 
-  module.lessons?.reduce((total, lesson) => total + (lesson.duration || 0), 0) || 0
-);
+function SyllabusSection({ data }: IProps) {
+  const modules = data?.modules as unknown as Array<
+    Omit<Module, "lessons"> & { lessons: Lesson[] }
+  >;
+  const moduleDurations = modules?.map(
+    (module) =>
+      module.lessons?.reduce(
+        (total, lesson) => total + (lesson.duration || 0),
+        0,
+      ) || 0,
+  );
 
   return (
     <section>
@@ -270,7 +318,8 @@ const moduleDurations = modules?.map((module) =>
                       <Clock className="w-3 h-3" /> {moduleDurations}
                     </span>
                     <span className="flex items-center gap-1">
-                      <BookOpen className="w-3 h-3" /> {module.lessons.length} lessons
+                      <BookOpen className="w-3 h-3" /> {module.lessons.length}{" "}
+                      lessons
                     </span>
                   </div>
                 </div>
@@ -307,7 +356,11 @@ const moduleDurations = modules?.map((module) =>
   );
 }
 
-function TestimonialsSection({}: IProps) {
+function TestimonialsSection({
+  data,
+}: {
+  data: IProps & { reviews: Review[] };
+}) {
   return (
     <section className="space-y-10 pt-8">
       <div className="space-y-2">
@@ -318,7 +371,7 @@ function TestimonialsSection({}: IProps) {
         </p>
       </div>
       <div className="grid md:grid-cols-2 gap-6">
-        {TESTIMONIALS.map((t, i) => (
+        {data?.reviews.map((t, i) => (
           <div
             key={i}
             className="p-6 rounded-2xl bg-white/5 border border-white/10 flex flex-col justify-between"
@@ -328,13 +381,13 @@ function TestimonialsSection({}: IProps) {
             </p>
             <div className="flex items-center gap-4">
               <Avatar className="w-10 h-10 ring-2 ring-primary/20">
-                <AvatarImage src={t.avatar} />
-                <AvatarFallback>{t.name[0]}</AvatarFallback>
+                <AvatarImage src={t.userAvatar as unknown as string} />
+                <AvatarFallback>{t.userName}</AvatarFallback>
               </Avatar>
               <div>
-                <div className="text-sm font-bold text-white">{t.name}</div>
+                <div className="text-sm font-bold text-white">{t.userName}</div>
                 <div className="text-[10px] text-primary uppercase tracking-widest">
-                  {t.role}
+                  {t.userRole}
                 </div>
               </div>
             </div>
@@ -345,7 +398,9 @@ function TestimonialsSection({}: IProps) {
   );
 }
 
-function CourseSidebar({}: IProps) {
+function CourseSidebar({ data }: IProps) {
+  const completionAchievement =
+    data?.completionAchievement as unknown as Achievement;
   return (
     <div className="lg:w-87.5 shrink-0 space-y-6 sticky top-24 self-start">
       <Card className="border-white/10 bg-white/5 backdrop-blur-sm overflow-hidden border-t-primary/20 border-t-2">
@@ -362,11 +417,14 @@ function CourseSidebar({}: IProps) {
             <div className="absolute inset-0 bg-grid-white/[0.05]" />
           </div>
           <div className="space-y-2">
-            <h4 className="font-bold tracking-tighter text-lg">
-              Earn the Fundamentals achievement
+            <h4 className="font-bold tracking-tighter line-clamp-1 text-lg">
+              {completionAchievement?.description}
             </h4>
             <p className="text-sm text-muted-foreground">
-              by <span className="text-primary font-bold">Solana Academy</span>
+              by{" "}
+              <span className="text-primary font-bold">
+                {completionAchievement?.name}
+              </span>
             </p>
           </div>
           <Button
@@ -402,7 +460,10 @@ function CourseSidebar({}: IProps) {
 
 export default function CourseDetail() {
   const params = useParams();
-  const data = useGetCourseById(params.courseId as string);
+  const searchParams = useSearchParams();
+  const courseId = params.courseId as string;
+  const language = searchParams.get("lang") as string;
+  const data = useQuery(courseQueries.bySlug(courseId, language));
 
   return (
     <div className="bg-background container mx-auto max-w-7xl pt-12 px-4 pb-24">
@@ -421,7 +482,7 @@ export default function CourseDetail() {
             <CourseDescription data={data.data as Course} />
             <InstructorsSection data={data.data as Course} />
             <SyllabusSection data={data.data as Course} />
-            <TestimonialsSection data={data.data as Course} />
+            <TestimonialsSection data={data.data as any} />
           </div>
           {/* Right: Sidebar Cards */}
           <CourseSidebar data={data.data as Course} />

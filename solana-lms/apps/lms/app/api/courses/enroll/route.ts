@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { client } from '@workspace/sanity-client'
+import { serverClient, publicClient } from '@workspace/sanity-client'
 
 export async function POST(request: NextRequest) {
   try {
@@ -15,7 +15,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Check if enrollment document exists
-    const existingEnrollment = await client.fetch(
+    const existingEnrollment = await serverClient.fetch(
       `*[_type == "enrollment" && courseId == $courseId && userId == $userId][0]`,
       { courseId, userId }
     )
@@ -28,7 +28,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Create enrollment document
-    const enrollment = await client.create({
+    const enrollment = await serverClient.create({
       _type: 'enrollment',
       courseId,
       userId,
@@ -42,12 +42,12 @@ export async function POST(request: NextRequest) {
     })
 
     // Update course stats
-    const currentStats = await client.fetch(
+    const currentStats = await serverClient.fetch(
       `*[_type == "course" && _id == $courseId][0].stats`,
       { courseId }
     )
 
-    await client
+    await serverClient
       .patch(courseId)
       .set({
         'stats.totalEnrollments': (currentStats?.totalEnrollments || 0) + 1,

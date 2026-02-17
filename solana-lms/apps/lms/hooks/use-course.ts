@@ -4,15 +4,16 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { queryBuilder } from "@workspace/sanity-client";
 import { learningService } from "@workspace/learning-service";
-import { queryKeys } from "@/lib/query-keys";
 import { toast } from "sonner";
+import { queryKeys } from "@/lib/queries";
+import { completeCourse, completeLesson, enrollInCourse } from "@/lib/actions";
 
 export function useCourse(slug: string) {
   const { publicKey } = useWallet();
   const queryClient = useQueryClient();
-  const userId = publicKey?.toString() || "";
+  const userId = publicKey?.toString() || "1234";
 
-  // Fetch course from Sanity
+  // Fetch course data
   const {
     data: course,
     isLoading: courseLoading,
@@ -23,44 +24,99 @@ export function useCourse(slug: string) {
     enabled: !!slug,
   });
 
-  // Fetch user progress
+  // Fetch user progress from localStorage via learningService
   const {
     data: progress,
     isLoading: progressLoading,
     error: progressError,
   } = useQuery({
     queryKey: queryKeys.progress.course(userId, course?._id || ""),
-    queryFn: () => learningService.getProgress(userId, course!._id),
+    queryFn: () => learningService.getProgress({ userId, courseId: course!._id }),
     enabled: !!userId && !!course?._id,
   });
 
-  // Enroll mutation
+  // Enrollment mutation
+  // Server Action updates Sanity, onSuccess updates localStorage
   const enrollMutation = useMutation({
     mutationFn: async () => {
       if (!userId || !course) {
-        throw new Error("Must be logged in and course must be loaded");
+        throw new Error("User and course are required");
       }
-      return learningService.enrollInCourse(userId, course._id);
+      return enrollInCourse({ userId, courseId: course._id });
     },
-    onSuccess: () => {
-      // Invalidate queries to refetch data
+
+    onSuccess: async (result, _variables) => {
+      if (!result.success) {
+        toast.error(result.error ?? "Failed to enroll");
+        return;
+      }
+
+      // Client-side: save initial progress to localStorage
+      await learningService.enrollInCourse({
+        userId,
+        courseId: course!._id,
+      });
+
       queryClient.invalidateQueries({
         queryKey: queryKeys.progress.course(userId, course!._id),
       });
       queryClient.invalidateQueries({
         queryKey: queryKeys.courses.detail(slug),
       });
-      toast.success("Successfully enrolled!");
+
+      toast.success("Successfully enrolled");
     },
+
     onError: (error) => {
       toast.error(error instanceof Error ? error.message : "Failed to enroll");
+    },
+  });
+
+  // Lesson completion mutation
+  // Server Action updates Sanity progress, onSuccess updates localStorage
+  const completeLessonMutation = useMutation({
+    mutationFn: async (lessonIndex: number) => {
+      if (!userId || !course) {
+        throw new Error("User and course are required");
+      }
+      return completeLesson({ userId, courseId: course._id, lessonIndex });
+    },
+
+    onSuccess: async (result, lessonIndex) => {
+      if (!result.success) {
+        toast.error(result.error ?? "Failed to save progress");
+        return;
+      }
+
+      // Client-side: update localStorage, XP, streak, achievements
+      const lessonResult = await learningService.completeLesson({
+        userId,
+        courseId: course!._id,
+        lessonIndex,
+      });
+
+      // If course is now complete, update Sanity via Server Action
+      if (lessonResult.courseCompleted) {
+        await completeCourse({ userId, courseId: course!._id });
+      }
+
+      queryClient.invalidateQueries({
+        queryKey: queryKeys.progress.course(userId, course!._id),
+      });
+
+      toast.success(`Lesson complete. ${lessonResult.xpAwarded} XP earned`);
+    },
+
+    onError: (error) => {
+      toast.error(
+        error instanceof Error ? error.message : "Failed to complete lesson",
+      );
     },
   });
 
   const isEnrolled =
     progress !== undefined && progress.completedLessons.length >= 0;
   const isCompleted = progress?.completionPercentage === 100;
-  const canReview = isCompleted;
 
   return {
     // Data
@@ -74,25 +130,10 @@ export function useCourse(slug: string) {
     // Derived states
     isEnrolled,
     isCompleted,
-    canReview,
+    canReview: isCompleted,
 
     // Actions
-    enroll: enrollMutation.mutate,
-    isEnrolling: enrollMutation.isPending,
+    enroll: enrollMutation,
+    completeLesson: completeLessonMutation,
   };
 }
-
-export const useGetAllCourses = () => {
-  return useQuery({
-    queryKey: queryKeys.courses.all,
-    queryFn: () => queryBuilder.getCourses(),
-  });
-};
-
-export const useGetCourseById = (slug:string) => {
-  return useQuery({
-    queryKey: queryKeys.courses.detail(slug),
-    queryFn: () => queryBuilder.getCourseBySlug(slug),
-    enabled: !!slug
-  });
-};

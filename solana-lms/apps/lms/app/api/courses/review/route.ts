@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { client } from '@workspace/sanity-client'
+import { serverClient } from '@workspace/sanity-client'
 
 export async function POST(request: NextRequest) {
   try {
@@ -31,7 +31,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Check if user has completed the course
-    const enrollment = await client.fetch(
+    const enrollment = await serverClient.fetch(
       `*[_type == "enrollment" && courseId == $courseId && userId == $userId && completed == true][0]`,
       { courseId, userId }
     )
@@ -44,7 +44,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Check for existing review
-    const existingReview = await client.fetch(
+    const existingReview = await serverClient.fetch(
       `*[_type == "review" && courseId == $courseId && userId == $userId][0]`,
       { courseId, userId }
     )
@@ -52,7 +52,7 @@ export async function POST(request: NextRequest) {
     let review
     if (existingReview) {
       // Update existing review (preserve featured status)
-      review = await client
+      review = await serverClient
         .patch(existingReview._id)
         .set({
           rating,
@@ -64,7 +64,7 @@ export async function POST(request: NextRequest) {
         .commit()
     } else {
       // Create new review
-      review = await client.create({
+      review = await serverClient.create({
         _type: 'review',
         courseId,
         userId,
@@ -81,7 +81,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Recalculate course stats
-    const allReviews = await client.fetch(
+    const allReviews = await serverClient.fetch(
       `*[_type == "review" && courseId == $courseId && verified == true]`,
       { courseId }
     )
@@ -90,7 +90,7 @@ export async function POST(request: NextRequest) {
     const averageRating =
       allReviews.reduce((sum: number, r: any) => sum + r.rating, 0) / totalReviews
 
-    await client
+    await serverClient
       .patch(courseId)
       .set({
         'stats.averageRating': Math.round(averageRating * 10) / 10,
@@ -125,7 +125,7 @@ export async function GET(request: NextRequest) {
       )
     }
 
-    const review = await client.fetch(
+    const review = await serverClient.fetch(
       `*[_type == "review" && courseId == $courseId && userId == $userId][0]`,
       { courseId, userId }
     )

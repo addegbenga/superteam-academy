@@ -19,9 +19,14 @@ import {
 import { Progress } from "@workspace/ui/components/progress";
 import { ScrollArea } from "@workspace/ui/components/scroll-area";
 import { cn } from "@workspace/ui/lib/utils";
-import { MarkdownViewer } from "../markdown";
+import { PortableTextRenderer } from "../markdown";
 import { MonacoEditor } from "../monaco-editor";
-import { INITIAL_CODE, LESSON_CONTENT } from "@/lib/data";
+import { INITIAL_CODE } from "@/lib/data";
+import Link from "next/link";
+import { useParams, useSearchParams } from "next/navigation";
+import { useQuery } from "@tanstack/react-query";
+import { courseQueries, lessonQueries, progressQueries } from "@/lib/queries";
+import { Lesson, Module } from "@workspace/sanity-client";
 
 /* =====================================================
    TYPES
@@ -193,6 +198,20 @@ function CourseHeader({
 ===================================================== */
 
 function CourseSidebar() {
+  const params = useParams();
+  const searchParams = useSearchParams();
+  const courseId = params.courseId as string;
+  const language = searchParams.get("lang") as string;
+  const userId = "1234";
+
+  const { data: course } = useQuery(courseQueries.bySlug(courseId, language));
+  const { data: progress } = useQuery(progressQueries.course(userId, courseId));
+
+  const modules = course?.modules as unknown as Array<
+    Omit<Module, "lessons"> & { lessons: Lesson[] }
+  >;
+  const completionPercentage = progress?.completionPercentage ?? 0;
+
   return (
     <ResizablePanel
       collapsible
@@ -204,28 +223,30 @@ function CourseSidebar() {
           <p className="font-medium tracking-tight text-sm mb-1.5">
             Course progress
           </p>
-          <Progress value={12} className="h-1 bg-white/10" />
+          <Progress value={completionPercentage} className="h-1 bg-white/10" />
           <p className="text-sm tracking-tight text-muted-foreground mt-1.5">
-            12% Complete
+            {completionPercentage}% Complete
           </p>
         </div>
 
         <ScrollArea className="flex-1 overflow-y-auto">
           <div className="p-4 space-y-4">
-            {[1, 2, 3, 4].map((mod) => (
-              <div key={mod} className="space-y-2">
+            {modules?.map((mod) => (
+              <div key={mod._id} className="space-y-2">
                 <div className="text-xs font-bold text-muted-foreground uppercase tracking-wider pl-2">
-                  Module {mod}
+                  {mod.title}
                 </div>
+
                 <div className="space-y-0.5">
-                  <LessonItem
-                    active={mod === 1}
-                    completed={mod === 1}
-                    title="Introduction to Solana"
-                  />
-                  <LessonItem title="Accounts Model" />
-                  <LessonItem title="Transactions & Instructions" />
-                  <LessonItem title="PDAs Explained" />
+                  {mod?.lessons?.map((lesson, index) => (
+                    <LessonItem
+                      key={lesson._id}
+                      title={lesson.title as string}
+                      lessonSlug={lesson?.slug?.current as any}
+                      //check if this lesson index is in completedLessons array
+                      completed={progress?.completedLessons.includes(index)}
+                    />
+                  ))}
                 </div>
               </div>
             ))}
@@ -239,15 +260,25 @@ function CourseSidebar() {
 /* =====================================================
    LESSON SECTION
 ===================================================== */
-
 function LessonSection({ showCodeEditor }: { showCodeEditor: boolean }) {
-  return (
-    <ResizablePanel defaultSize={showCodeEditor ? 40 : 75} minSize={30}>
-      <ScrollArea className="h-full">
-        <div className="py-3 px-6 max-w-3xl mx-auto">
-          <MarkdownViewer markdown={LESSON_CONTENT} />
+  const params = useParams();
+  const searchParams = useSearchParams();
+  const lessonSlug = params.courseLessonId?.[0] as string;
+  const language = searchParams.get("lang") as string;
+  const data = useQuery(lessonQueries.bySlug(lessonSlug, language));
 
-          <div className="mt-8 p-6 bg-blue-500/5 border border-blue-500/10 rounded-xl">
+  return (
+    <ResizablePanel
+      defaultSize={showCodeEditor ? 40 : 75}
+      minSize={30}
+      className="flex flex-col h-full"
+    >
+      {/* Scrollable Content */}
+      <ScrollArea className="flex-1">
+        <div className="py-3 px-6 flex flex-col justify-between max-w-3xl mx-auto">
+          <PortableTextRenderer content={data?.data?.content as any} />
+
+          <div className="p-6 my-5 bg-blue-500/5 border border-blue-500/10 rounded-xl">
             <h4 className="flex items-center gap-2 font-bold text-blue-400 mb-2">
               <Trophy className="w-4 h-4" /> Challenge
             </h4>
@@ -257,11 +288,13 @@ function LessonSection({ showCodeEditor }: { showCodeEditor: boolean }) {
             </p>
           </div>
         </div>
-        <div className="flex p-3 bg-background border-t justify-between">
-          <Button variant="outline">Previous</Button>
-          <Button variant="outline">Next Lesson</Button>
-        </div>
       </ScrollArea>
+
+      {/* Pinned Bottom Section */}
+      <div className="flex p-3 border-t justify-between bg-background">
+        <Button variant="outline">Previous</Button>
+        <Button variant="outline">Next Lesson</Button>
+      </div>
     </ResizablePanel>
   );
 }
@@ -378,15 +411,18 @@ function TerminalPanel({
 
 function LessonItem({
   title,
-  active,
+  lessonSlug,
   completed,
 }: {
   title: string;
-  active?: boolean;
+  lessonSlug: string;
   completed?: boolean;
 }) {
+  const params = useParams();
+  const active = params.courseLessonId?.[0] === lessonSlug;
   return (
-    <button
+    <Link
+      href={lessonSlug}
       className={cn(
         "w-full flex items-center gap-3 px-3 py-2 rounded-md text-sm transition-colors text-left group",
         active
@@ -408,7 +444,7 @@ function LessonItem({
           <div className="w-1.5 h-1.5 rounded-full bg-primary" />
         )}
       </div>
-      <span className="truncate">{title}</span>
-    </button>
+      <span className="truncate text-pretty">{title}</span>
+    </Link>
   );
 }

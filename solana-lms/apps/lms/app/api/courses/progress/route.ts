@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { client } from '@workspace/sanity-client'
+import { serverClient} from '@workspace/sanity-client'
 
 export async function POST(request: NextRequest) {
   try {
@@ -14,7 +14,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Get enrollment
-    const enrollment = await client.fetch(
+    const enrollment = await serverClient.fetch(
       `*[_type == "enrollment" && courseId == $courseId && userId == $userId][0]`,
       { courseId, userId }
     )
@@ -32,7 +32,7 @@ export async function POST(request: NextRequest) {
       completedLessons.push(lessonId)
 
       // Get total lessons in course
-      const course = await client.fetch(
+      const course = await serverClient.fetch(
         `*[_type == "course" && _id == $courseId][0] {
           "totalLessons": count(modules[]->lessons)
         }`,
@@ -44,7 +44,7 @@ export async function POST(request: NextRequest) {
       )
 
       // Update enrollment
-      await client
+      await serverClient
         .patch(enrollment._id)
         .set({
           'progress.completedLessons': completedLessons,
@@ -85,7 +85,7 @@ export async function GET(request: NextRequest) {
       )
     }
 
-    const enrollment = await client.fetch(
+    const enrollment = await serverClient.fetch(
       `*[_type == "enrollment" && courseId == $courseId && userId == $userId][0]`,
       { courseId, userId }
     )
