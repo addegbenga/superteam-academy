@@ -70,7 +70,7 @@ export const courseQueries = {
     queryOptions({
       queryKey: queryKeys.courses.detail(slug, language),
       queryFn: () => queryBuilder.getCourseBySlug(slug, language),
-      staleTime: 1000 * 60 * 60, 
+          staleTime: 1000 * 60 * 5, // 5 minutes — won't refetch on revisit
     }),
   byIds: (ids: string[], language?: any) =>
     queryOptions({
@@ -84,7 +84,7 @@ export const courseQueries = {
     queryOptions({
       queryKey: queryKeys.courses.all,
       queryFn: () => queryBuilder.getCourses(lang),
-      staleTime: 1000 * 60 * 60, 
+      staleTime: 1000 * 60 * 5, // 5 minutes — won't refetch on revisit
     }),
 };
 
@@ -95,12 +95,14 @@ export const lessonQueries = {
     queryOptions({
       queryKey: queryKeys.lessons.detail(slug, language),
       queryFn: () => queryBuilder.getLessonBySlug(slug, language as any),
+      staleTime: 1000 * 60 * 5, // 5 minutes — won't refetch on revisit
     }),
 
   byId: (id: string) =>
     queryOptions({
       queryKey: [...queryKeys.lessons.all, "id", id] as const,
       queryFn: () => queryBuilder.getLessonById(id),
+      staleTime: 1000 * 60 * 5, // 5 minutes — won't refetch on revisit
     }),
 
   adjacent: (moduleId: string) =>
