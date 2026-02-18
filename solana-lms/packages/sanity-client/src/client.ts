@@ -10,9 +10,10 @@ import type { SanityImageSource } from "@sanity/image-url/signed";
 export const publicClient = createClient({
   projectId: process.env.NEXT_PUBLIC_SANITY_PROJECT_ID,
   dataset: "production",
-  apiVersion: "2024-01-01",
+  apiVersion: "2025-02-19",
   token: process.env.NEXT_PUBLIC_SANITY_API_TOKEN,
-  useCdn: process.env.NODE_ENV === "production",
+  useCdn: true,
+  
 });
 
 
