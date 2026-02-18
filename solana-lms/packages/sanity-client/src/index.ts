@@ -1,8 +1,8 @@
-export { publicClient, urlFor } from "./client.ts";
-export { serverClient } from "./server.ts";
-export { queries } from "./queries.ts";
-export { queryBuilder } from "./query-builder.ts";
-export type * from "./types.gen.ts";
+export { publicClient, urlFor } from "./client";
+export { serverClient } from "./server";
+export { queries } from "./queries";
+export { queryBuilder } from "./query-builder";
+export type * from "./types.gen";
 export type {
   CourseStatsResponse,
   CourseWithTestimonials,
@@ -12,4 +12,4 @@ export type {
   AdjacentLessonsResponse,
   SlugResponse,
   LearningPathSlugResponse,
-} from "./query-builder.ts";
+} from "./query-builder";

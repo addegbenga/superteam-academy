@@ -4,7 +4,9 @@
     "outDir": "dist",
     "rootDir": "src",
     "allowImportingTsExtensions": true,
-    "noEmit": true
+    "noEmit": true,
+    "module": "es2015",
+    "moduleResolution": "bundler"
   },
   "include": ["src","turbo"],
   "exclude": ["node_modules", "dist"]

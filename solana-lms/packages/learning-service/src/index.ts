@@ -1,3 +1,3 @@
-export type * from './interfaces.ts'
-export { MockLearningService, learningService } from './mock-impl.ts'
-export { SolanaLearningService } from './solana-impl.ts'
+export type * from './interfaces'
+export { SolanaLearningService } from './solana-impl'
+export { MockLearningService, learningService } from './mock-impl'

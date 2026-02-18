@@ -12,8 +12,11 @@ import { useQuery } from "@tanstack/react-query";
 import { userQueries } from "@/lib/queries";
 import { getCurrentUserId } from "@/hooks/auth";
 import { StreakPopover } from "../streak";
+import { usePathname } from "next/navigation";
+import { cn } from "@workspace/ui/lib/utils";
 
 export function Navbar() {
+  const pathname = usePathname();
   const userId = getCurrentUserId();
   const { data: user } = useQuery(userQueries.profile(userId));
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -23,6 +26,11 @@ export function Navbar() {
     { label: "Leaderboard", href: "/leaderboard" },
     { label: "Profile", href: "/profile" },
   ];
+
+  const isActive = (href: string) => {
+    // Handles nested routes like /course/123
+    return pathname === href || pathname.startsWith(`${href}/`);
+  };
 
   return (
     <header className="sticky top-0 w-full z-50 border-b border-white/5 bg-background/60 backdrop-blur-xl">
@@ -75,15 +83,24 @@ export function Navbar() {
 
           {/* Desktop Nav */}
           <nav className="hidden md:flex items-center gap-8">
-            {navItems.map((item) => (
-              <Link
-                className="text-muted-foreground text-sm"
-                key={item.href}
-                href={item.href}
-              >
-                {item.label}
-              </Link>
-            ))}
+            {navItems.map((item) => {
+              const active = isActive(item.href);
+              return (
+                <Link
+                  className={cn(
+                    "text-muted-foreground text-sm",
+
+                    active
+                      ? " text-foreground font-medium"
+                      : "text-muted-foreground hover:text-white",
+                  )}
+                  key={item.href}
+                  href={item.href}
+                >
+                  {item.label}
+                </Link>
+              );
+            })}
           </nav>
         </div>
 

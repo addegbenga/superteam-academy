@@ -1,5 +1,5 @@
-import { queries } from "./queries.ts";
-import type { SupportedLanguage } from "./language.ts";
+import { queries } from ".";
+import type { SupportedLanguage } from "./language";
 import type {
   Course,
   Module,
@@ -8,8 +8,8 @@ import type {
   Achievement,
   LearningPath,
   Review,
-} from "./types.gen.ts";
-import { publicClient } from "./client.ts";
+} from "./types.gen";
+import { publicClient } from "./client";
 
 type QueryParams = {
   language?: SupportedLanguage;

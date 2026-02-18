@@ -1,4 +1,4 @@
-import { client } from './client.ts'
+import { publicClient as client } from '.'
 
 export type SupportedLanguage = 'en' | 'pt' | 'es'
 

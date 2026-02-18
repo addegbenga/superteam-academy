@@ -308,7 +308,7 @@ function ActivityHeatmap({
 }) {
   const today = new Date();
   const { weeks, monthLabels } = buildHeatmapData(streakHistory, achievements);
-  const CELL = 11,
+  const CELL = 12,
     GAP = 2.5;
   return (
     <TooltipProvider delayDuration={60}>
@@ -411,7 +411,7 @@ function ActivityHeatmap({
           <div className="w-2 h-2 rounded-sm bg-primary/40" />
           <div className="w-2 h-2 rounded-sm bg-primary/70" />
           <div className="w-2 h-2 rounded-sm bg-yellow-400" />
-          <span>More · 🏆 Achievement</span>
+          {/* <span>More · 🏆 Achievement</span> */}
         </div>
       </div>
     </TooltipProvider>
@@ -436,13 +436,13 @@ export default function DashboardHome() {
   const recentCourse = data?.[0] ?? null;
 
   return (
-    <div className="container max-w-5xl py-10 mx-auto px-4 space-y-3">
+    <div className="container max-w-6xl py-10 mx-auto px-4 space-y-3">
       {/* ── Header ── */}
       <div className="pb-3">
         <h1 className="text-3xl tracking-tighter font-bold mb-1">
           Welcome back, Dev 👋
         </h1>
-        <p className="text-sm text-muted-foreground">
+        <p className="text-sm tracking-tight text-muted-foreground">
           {streak > 0
             ? `You're on a ${streak} day streak! Keep it up.`
             : "Complete a lesson today to start your streak!"}
@@ -532,7 +532,7 @@ export default function DashboardHome() {
         <div
           className={`grid pt-2 gap-3 ${
             recentCourse
-              ? "grid-cols-1 lg:grid-cols-[1fr_minmax(0,25%)]"
+              ? "grid-cols-1 lg:grid-cols-[1fr_minmax(0,24%)]"
               : "grid-cols-1"
           }`}
         >
@@ -565,10 +565,10 @@ export default function DashboardHome() {
                       <Link
                         key={course._id}
                         href={`/course/${course.slug.current}`}
-                        className="group flex gap-4 rounded-xl border border-white/5 bg-white/2 hover:bg-white/[0.04] hover:border-white/10 transition-all overflow-hidden"
+                        className="group items-center flex gap-4 h-40 rounded-xl border border-white/5 bg-white/2 hover:bg-white/4 hover:border-white/10 transition-all overflow-hidden"
                       >
                         {/* Thumbnail */}
-                        <div className="relative w-28 shrink-0 self-stretch min-h-20">
+                        <div className="relative w-40 shrink-0 self-stretch min-h-30">
                           {course.thumbnail ? (
                             <Image
                               fill
@@ -592,16 +592,16 @@ export default function DashboardHome() {
                                 Completed
                               </span>
                             ) : (
-                              <span className="inline-flex items-center gap-1 text-[9px] font-semibold uppercase tracking-widest text-primary/70">
+                              <p className="inline-flex items-center gap-1 text-[9px] font-semibold uppercase tracking-widest text-primary/70">
                                 <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
-                                In progress
-                              </span>
+                                <span className="mt-0.5">In progress</span>
+                              </p>
                             )}
                           </div>
-                          <p className="text-sm font-semibold leading-snug mb-1 group-hover:text-white transition-colors">
+                          <p className="font-semibold tracking-tight leading-snug mb-1 group-hover:text-white transition-colors">
                             {course.title}
                           </p>
-                          <p className="text-[11px] text-muted-foreground line-clamp-2 leading-relaxed">
+                          <p className="text-sm text-muted-foreground line-clamp-2 leading-relaxed">
                             {course.description}
                           </p>
                           <div className="flex items-center gap-3 mt-2">
@@ -679,7 +679,7 @@ export default function DashboardHome() {
                           ) : (
                             <div className="w-full h-full bg-white/5" />
                           )}
-                          <div className="absolute inset-0 bg-linear-to-t from-[#0d0d0d] via-[#0d0d0d]/60 to-transparent" />
+                          <div className="absolute inset-0 bg-linear-to-t from-[#0d0d0d] via-[#0d0d0d]/90 to-transparent" />
                           <div className="absolute bottom-3 left-4 flex items-center gap-1.5">
                             {isCompleted ? (
                               <span className="flex items-center gap-1.5 px-2 py-1 rounded-full bg-emerald-500/20 border border-emerald-500/30 backdrop-blur-sm">
@@ -767,11 +767,10 @@ export default function DashboardHome() {
           )}
         </div>
 
-        {/* ── Achievements Card (right column) ── */}
-
-        <div className="flex flex-col lg:flex-row gap-4 ">
+        {/* Simple two-column layout: 75% left, 25% right */}
+        <div className="grid pt-2 gap-3 grid-cols-1 lg:grid-cols-[1fr_minmax(0,24%)]">
           {/* ── Activity Heatmap (left column, bottom on mobile) ── */}
-          <div className="rounded-2xl lg:w-[73.5%] border border-white/5 bg-white/2 p-5 h-full">
+          <div className="rounded-2xl border border-white/5 bg-white/2 p-5 h-full">
             <div className="mb-4">
               <h3 className="text-sm font-semibold">Activity Log</h3>
               <p className="text-[11px] text-muted-foreground mt-0.5">
@@ -783,9 +782,6 @@ export default function DashboardHome() {
               achievements={achievements as any}
             />
           </div>
-
-          {/* Closing left column */}
-
           <div className="rounded-2xl  border border-white/5 bg-white/2 overflow-hidden">
             {/* Header */}
             <div className="px-4 py-3 border-b border-white/5 flex items-center justify-between shrink-0">

@@ -41,7 +41,7 @@ import type {
 } from "@workspace/sanity-client";
 
 import { useQuery } from "@tanstack/react-query";
-import { courseQueries,  progressQueries } from "@/lib/queries/";
+import { courseQueries, progressQueries } from "@/lib/queries/";
 import { useCourse } from "@/hooks/use-course";
 import { PortableTextRenderer } from "../markdown";
 import { getCurrentUserId } from "@/hooks/auth";
@@ -60,8 +60,6 @@ function CourseHero({ courseId, data }: IProps) {
   const progress = useQuery(
     progressQueries.course(userId, data?._id as string),
   );
-
-  console.log(progress.data);
 
   const modules = data?.modules as unknown as Array<
     Omit<Module, "lessons"> & { lessons: Lesson[] }
@@ -101,7 +99,7 @@ function CourseHero({ courseId, data }: IProps) {
           </div>
 
           <div className="flex items-center justify-between">
-            <h1 className="text-4xl tracking-tighter line-clamp-1 font-bold">
+            <h1 className="text-3xl tracking-tighter line-clamp-1 font-bold">
               {data?.title}
             </h1>
             <Button
@@ -216,7 +214,9 @@ function LearningObjectives({ data }: IProps) {
         {data?.learningObjectives?.map((item, i) => (
           <div key={i} className="flex items-start gap-3">
             <CheckCircle2 className="w-5 h-5 text-primary shrink-0 mt-0.5" />
-            <span className="text-muted-foreground">{item.objective}</span>
+            <span className="text-muted-foreground tracking-tight">
+              {item.objective}
+            </span>
           </div>
         ))}
       </div>
@@ -467,7 +467,7 @@ export default function CourseDetail() {
   const data = useQuery(courseQueries.bySlug(courseId, language));
 
   return (
-    <div className="bg-background container mx-auto max-w-7xl pt-12 px-4 pb-24">
+    <div className="bg-background container mx-auto max-w-6xl pt-12 px-4 pb-24">
       {/* Course Hero Section */}
       <CourseHero
         data={data.data as Course}

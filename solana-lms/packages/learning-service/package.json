@@ -20,6 +20,8 @@
   "exports": {
     ".": "./src/index.ts",
     "./interfaces": "./src/interfaces.ts",
-    "./mock": "./src/mock-impl.ts"
+    "./mock-impl": "./src/mock-impl.ts",
+    "./solana-impl.ts": "./src/solana-impl.ts"
+    
   }
 }

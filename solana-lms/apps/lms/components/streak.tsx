@@ -139,12 +139,16 @@ export function StreakPopover({ streak, xp }: StreakPopoverProps) {
                     ${reached ? "bg-primary/5 border-primary/20" : "bg-white/[0.02] border-white/5"}
                   `}
                 >
-                  <span className={`text-lg ${!reached && "grayscale opacity-40"}`}>
+                  <span
+                    className={`text-lg ${!reached && "grayscale opacity-40"}`}
+                  >
                     {icon}
                   </span>
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center justify-between mb-1">
-                      <span className={`text-xs font-semibold ${reached ? "text-white" : "text-muted-foreground"}`}>
+                      <span
+                        className={`text-xs font-semibold ${reached ? "text-white" : "text-muted-foreground"}`}
+                      >
                         {label}
                       </span>
                       <span className="text-[10px] text-muted-foreground font-mono">

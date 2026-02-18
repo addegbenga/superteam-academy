@@ -19,10 +19,10 @@ export default function Courses() {
   );
 
   return (
-    <div className="container max-w-7xl mx-auto px-4 py-12">
+    <div className="container max-w-6xl mx-auto px-4 py-12">
       <div className="flex flex-col gap-6 mb-12">
         <div>
-          <h1 className="text-3xl tracking-tight font-bold mb-2">
+          <h1 className="text-3xl tracking-tighter font-bold mb-2">
             Course Catalog
           </h1>
           <p className="text-muted-foreground text-lg">
