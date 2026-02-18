@@ -41,10 +41,10 @@ import type {
 } from "@workspace/sanity-client";
 
 import { useQuery } from "@tanstack/react-query";
-import { courseQueries, progressQueries } from "@/lib/queries/";
+import { courseQueries,  progressQueries } from "@/lib/queries/";
 import { useCourse } from "@/hooks/use-course";
-import type { Progress } from "@workspace/learning-service";
 import { PortableTextRenderer } from "../markdown";
+import { getCurrentUserId } from "@/hooks/auth";
 
 type IProps = {
   courseId?: string;
@@ -54,17 +54,18 @@ type IProps = {
 // ==================== COMPONENTS ====================
 
 function CourseHero({ courseId, data }: IProps) {
-  const userId = "1234";
+  const userId = getCurrentUserId();
   const navigation = useRouter();
   const { enroll } = useCourse(courseId as string);
   const progress = useQuery(
     progressQueries.course(userId, data?._id as string),
   );
 
+  console.log(progress.data);
+
   const modules = data?.modules as unknown as Array<
     Omit<Module, "lessons"> & { lessons: Lesson[] }
   >;
-
 
   return (
     <div className="px-4">
@@ -136,7 +137,7 @@ function CourseHero({ courseId, data }: IProps) {
             <Button
               disabled={progress.isPending}
               onClick={() => {
-                if (!progress?.data?.courseId) {
+                if (!progress?.data?.enrolled) {
                   enroll.mutate(undefined, {
                     onSuccess() {
                       navigation.push(
@@ -156,7 +157,7 @@ function CourseHero({ courseId, data }: IProps) {
             >
               {progress.isPending
                 ? "Loading..."
-                : progress?.data?.courseId
+                : progress?.data?.enrolled
                   ? " Continue learning "
                   : "Start learning now"}
             </Button>

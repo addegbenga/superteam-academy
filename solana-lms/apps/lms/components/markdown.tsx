@@ -109,22 +109,22 @@ const components: PortableTextComponents = {
       <p className="text-muted-foreground mb-4 leading-relaxed">{children}</p>
     ),
     h1: ({ children }) => (
-      <h1 className="text-3xl font-bold mb-6 mt-10 tracking-tight text-foreground">
+      <h1 className="text-4xl font-bold mb-6 mt-10 tracking-tighter text-foreground">
         {children}
       </h1>
     ),
     h2: ({ children }) => (
-      <h2 className="text-2xl font-bold mb-4 mt-8 tracking-tight text-foreground">
+      <h2 className="text-3xl font-bold mb-4 mt-8 tracking-tighter text-foreground">
         {children}
       </h2>
     ),
     h3: ({ children }) => (
-      <h3 className="text-xl font-bold mb-3 mt-6 tracking-tight text-foreground">
+      <h3 className="text-2xl font-bold mb-3 mt-6 tracking-tighter text-foreground">
         {children}
       </h3>
     ),
     h4: ({ children }) => (
-      <h4 className="text-lg font-semibold mb-2 mt-4 tracking-tight text-foreground">
+      <h4 className="text-xl font-semibold mb-2 mt-4 tracking-tighter text-foreground">
         {children}
       </h4>
     ),

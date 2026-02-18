@@ -18,8 +18,8 @@ export const queryKeys = {
   // Lessons
   lessons: {
     all: ["lessons"] as const,
-    detail: (slug: string, lang?:string) =>
-      [...queryKeys.lessons.all, "detail", slug,lang] as const,
+    detail: (slug: string, lang?: string) =>
+      [...queryKeys.lessons.all, "detail", slug, lang] as const,
   },
 
   // User Progress
@@ -27,6 +27,8 @@ export const queryKeys = {
     all: (userId: string) => ["progress", userId] as const,
     course: (userId: string, courseId: string) =>
       [...queryKeys.progress.all(userId), "course", courseId] as const,
+    enrolled: (userId: string) =>
+      [...queryKeys.progress.all(userId), "enrolled"] as const,
   },
 
   // User Profile
@@ -69,6 +71,12 @@ export const courseQueries = {
       queryFn: () => queryBuilder.getCourseBySlug(slug, language),
     }),
 
+  byId: (id: string, language?: any) =>
+    queryOptions({
+      queryKey: queryKeys.courses.detail(id, language),
+      queryFn: () => queryBuilder.getCourseById(id, language),
+    }),
+
   all: (lang?: any) =>
     queryOptions({
       queryKey: queryKeys.courses.all,
@@ -81,7 +89,7 @@ export const courseQueries = {
 export const lessonQueries = {
   bySlug: (slug: string, language?: string) =>
     queryOptions({
-      queryKey: queryKeys.lessons.detail(slug,language),
+      queryKey: queryKeys.lessons.detail(slug, language),
       queryFn: () => queryBuilder.getLessonBySlug(slug, language as any),
     }),
 
@@ -98,7 +106,6 @@ export const lessonQueries = {
     }),
 };
 
-
 // ==================== PROGRESS QUERIES (localStorage via learningService) ====================
 
 export const progressQueries = {
@@ -109,6 +116,14 @@ export const progressQueries = {
       queryFn: () => learningService.getProgress({ userId, courseId }),
       enabled: !!userId && !!courseId,
       staleTime: 0, // Always fresh - progress changes frequently
+    }),
+
+  enrolled: (userId: string) =>
+    queryOptions({
+      queryKey: queryKeys.progress.enrolled(userId),
+      queryFn: () => learningService.getEnrolledCourses({ userId }),
+      enabled: !!userId,
+      staleTime: 0,
     }),
 };
 
@@ -122,6 +137,14 @@ export const userQueries = {
       queryFn: () => learningService.getXP({ userId }),
       enabled: !!userId,
       staleTime: 0,
+    }),
+
+  profile: (userId: string) =>
+    queryOptions({
+      queryKey: [...queryKeys.user.all(userId), "profile"] as const,
+      queryFn: () => learningService.getUser({ userId }),
+      enabled: !!userId,
+      staleTime: 0, // Always fresh — streak break check runs on every fetch
     }),
 
   // Current level derived from XP

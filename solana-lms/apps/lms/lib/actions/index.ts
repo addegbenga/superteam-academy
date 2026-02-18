@@ -57,7 +57,7 @@ lessonId,
 }: CompleteLessonPayload) {
   try {
     const response = await fetch(
-      `${apiBase}/progress`,
+      `${apiBase}/courses/progress`,
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },
