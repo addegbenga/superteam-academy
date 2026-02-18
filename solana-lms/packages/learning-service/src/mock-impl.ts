@@ -400,39 +400,39 @@ export class MockLearningService implements LearningProgressService {
   }
 
   // ==================== GET ALL COURSE ENROLLMENT ====================
-// Scans localStorage for all progress keys belonging to this user
-// and returns the ones where enrolled === true, sorted by lastActivityAt desc.
-//
-// In production: single indexer query for all Enrollment PDAs owned by wallet.
+  // Scans localStorage for all progress keys belonging to this user
+  // and returns the ones where enrolled === true, sorted by lastActivityAt desc.
+  //
+  // In production: single indexer query for all Enrollment PDAs owned by wallet.
 
-async getEnrolledCourses({ userId }: UserPayload): Promise<Progress[]> {
-  if (!this.storage) return [];
+  async getEnrolledCourses({ userId }: UserPayload): Promise<Progress[]> {
+    if (!this.storage) return [];
 
-  const prefix = this.getKey("progress", userId, "");
-  const enrolled: Progress[] = [];
+    const prefix = this.getKey("progress", userId, "");
+    const enrolled: Progress[] = [];
 
-  for (let i = 0; i < this.storage.length; i++) {
-    const key = this.storage.key(i);
-    if (!key?.startsWith(prefix)) continue;
+    for (let i = 0; i < this.storage.length; i++) {
+      const key = this.storage.key(i);
+      if (!key?.startsWith(prefix)) continue;
 
-    const raw = this.storage.getItem(key);
-    if (!raw) continue;
+      const raw = this.storage.getItem(key);
+      if (!raw) continue;
 
-    const data = JSON.parse(raw);
-    if (!data.enrolled) continue;
+      const data = JSON.parse(raw);
+      if (!data.enrolled) continue;
 
-    enrolled.push({
-      ...data,
-      startedAt: new Date(data.startedAt),
-      lastActivityAt: new Date(data.lastActivityAt),
-    });
+      enrolled.push({
+        ...data,
+        startedAt: new Date(data.startedAt),
+        lastActivityAt: new Date(data.lastActivityAt),
+      });
+    }
+
+    // Most recently active first
+    return enrolled.sort(
+      (a, b) => b.lastActivityAt.getTime() - a.lastActivityAt.getTime(),
+    );
   }
-
-  // Most recently active first
-  return enrolled.sort(
-    (a, b) => b.lastActivityAt.getTime() - a.lastActivityAt.getTime(),
-  );
-}
 
   // ==================== USER PROFILE ====================
 

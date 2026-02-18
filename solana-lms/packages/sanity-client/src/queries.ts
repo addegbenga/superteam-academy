@@ -39,82 +39,21 @@ export const queries = {
     _updatedAt
   }`,
 
-  // Get course by ID with full details
-courseById: `*[_type == "course" && _id == $id && language == $language][0] {
-  _id,
-  title,
-  slug,
-  description,
-  fullDescription,
-  learningObjectives,
-  difficulty,
-  duration,
-  xpReward,
-  track,
-  language,
-  "thumbnail": thumbnail.asset->url,
-  status,
-  tags,
-  stats,
-  "prerequisites": prerequisites[]-> {
+  // In your queryBuilder / queries file
+  coursesByIds: `*[_type == "course" && _id in $ids] {
     _id,
     title,
     slug,
-    difficulty
-  },
-  "modules": modules[]-> {
-    _id,
-    title,
     description,
-    order,
-    "lessons": lessons[]-> {
-      _id,
-      title,
-      slug,
-      type,
-      duration,
-      xpReward,
-      order,
-      language,
-      hasVideo,
-      hasTextContent
-    } | order(order asc)
-  } | order(order asc),
-  "instructors": instructors[]-> {
-    _id,
-    name,
-    "avatar": avatar.asset->url,
-    role,
-    bio,
-    social
-  },
-  "completionAchievement": completionAchievement-> {
-    _id,
-    id,
-    name,
-    description,
-    icon,
-    category
-  },
-  "reviews": *[_type == "review" && courseId == ^._id && verified == true] | order(rating desc, createdAt desc) {
-    _id,
-    userName,
-    userRole,
-    "userAvatar": userAvatar.asset->url,
-    rating,
-    content,
-    featured,
-    createdAt
-  },
-  "featuredReviews": *[_type == "review" && courseId == ^._id && featured == true && verified == true] | order(featuredOrder asc, rating desc) [0...4] {
-    _id,
-    userName,
-    userRole,
-    "userAvatar": userAvatar.asset->url,
-    rating,
-    content,
-    createdAt
-  }
+    difficulty,
+    duration,
+    xpReward,
+    track,
+    language,
+    "thumbnail": thumbnail.asset->url,
+    status,
+    tags,
+    stats
 }`,
 
   // Get course by slug with full details

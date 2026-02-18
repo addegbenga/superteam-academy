@@ -14,6 +14,7 @@ import { publicClient } from "./client.ts";
 type QueryParams = {
   language?: SupportedLanguage;
   slug?: string;
+  ids?: string[];
   id?: string;
   track?: string;
   difficulty?: string;
@@ -121,11 +122,11 @@ export class QueryBuilder {
     return this.execute<Course>("courseBySlug", { slug, language });
   }
 
-  async getCourseById(
-    slug: string,
+  async getCourseByIds(
+    ids: string[],
     language?: SupportedLanguage,
   ): Promise<Course> {
-    return this.execute<Course>("courseById", { slug, language });
+    return this.execute<Course>("coursesByIds", { ids, language });
   }
 
   async getCourseBySlugFallback(slug: string): Promise<Course> {
