@@ -527,8 +527,6 @@ export default function DashboardHome() {
         />
       </div>
 
-      
-
       <section className="flex flex-col gap-4">
         {/* Simple two-column layout: 75% left, 25% right */}
         <div
@@ -769,12 +767,6 @@ export default function DashboardHome() {
           )}
         </div>
 
-<<<<<<< HEAD
-        {recentCourse &&
-=======
-   
->>>>>>> feat/lms
-        
         <div className="grid pt-2 gap-3 grid-cols-1 lg:grid-cols-[1fr_minmax(0,24%)]">
           {/* ── Activity Heatmap (left column, bottom on mobile) ── */}
           <div className="rounded-2xl border border-white/5 bg-white/2 p-5 h-full">
@@ -822,12 +814,6 @@ export default function DashboardHome() {
             </div>
           </div>
         </div>
-<<<<<<< HEAD
-        }
-=======
-        
->>>>>>> feat/lms
-
       </section>
     </div>
   );
