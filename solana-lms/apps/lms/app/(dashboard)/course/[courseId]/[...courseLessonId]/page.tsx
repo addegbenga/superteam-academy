@@ -1,9 +1,7 @@
-
 import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
 import SingleCourse from "@/components/course/single-course";
 import { getQueryClient } from "@/components/providers/query-client";
 import { courseQueries, lessonQueries } from "@/lib/queries";
-
 
 export default async function CoursePage({
   params,
@@ -29,5 +27,6 @@ export default async function CoursePage({
     <HydrationBoundary state={dehydrate(queryClient)}>
       <SingleCourse />
     </HydrationBoundary>
+
   );
 }

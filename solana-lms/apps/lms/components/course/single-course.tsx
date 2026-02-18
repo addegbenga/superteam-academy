@@ -34,7 +34,7 @@ import { PortableTextRenderer } from "../markdown";
 import { MonacoEditor } from "../monaco-editor";
 import Link from "next/link";
 import { useParams, useSearchParams } from "next/navigation";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useSuspenseQuery } from "@tanstack/react-query";
 import { courseQueries, lessonQueries, progressQueries } from "@/lib/queries";
 import { Lesson, Module } from "@workspace/sanity-client";
 import { useCourse } from "@/hooks/use-course";
@@ -167,6 +167,7 @@ export default function Course() {
       />
 
       <ResizablePanelGroup orientation="horizontal" className="h-full">
+        
         <Sidebar
           courseSlug={courseSlug}
           lessonSlug={lessonSlug}
@@ -278,12 +279,14 @@ function Sidebar({
   >;
 
   return (
-    <ResizablePanel
-      collapsible
-      maxSize={300}
-      className="bg-black/20 border-r border-border/50"
-    >
-      <div className="h-full flex flex-col">
+    // <ResizablePanel
+    //   id="left"
+    //   collapsible
+    //   defaultSize="20%"
+    //   maxSize="20%"
+    //   className="bg-black/20 min-w-5 border-border/50"
+    // >
+      <div className="h-full max-w-[18rem] hidden lg:flex flex-col">
         <div className="p-4 border-b border-border/50">
           <p className="font-medium text-muted-foreground tracking-tight text-xs mb-1">
             Course progress
@@ -323,7 +326,7 @@ function Sidebar({
           </div>
         </ScrollArea>
       </div>
-    </ResizablePanel>
+    // </ResizablePanel>
   );
 }
 
@@ -363,9 +366,10 @@ function LessonPanel({
 
   return (
     <ResizablePanel
-      defaultSize={showCodeEditor ? 40 : 75}
-      minSize={30}
-      className="flex flex-col h-full"
+      id="center"
+      defaultSize="100%"
+      maxSize="100%"
+      className="flex  flex-col h-full"
     >
       {hasVideo && (
         <div className="flex items-center gap-1 px-4 border-b border-white/5 shrink-0">
@@ -563,7 +567,7 @@ function ResourcesBlock({
             href={r.url.trim()}
             target="_blank"
             rel="noopener noreferrer"
-            className="flex items-center justify-between px-4 py-3 hover:bg-white/[0.03] transition-colors group"
+            className="flex items-center justify-between px-4 py-3 hover:bg-white/3 transition-colors group"
           >
             <div className="flex items-center gap-3">
               <div className="w-1.5 h-1.5 rounded-full bg-white/20 shrink-0" />
@@ -749,7 +753,7 @@ function EditorPanel({
   };
 
   return (
-    <ResizablePanel defaultSize={350} minSize={300} className="flex flex-col">
+    <ResizablePanel     id="right" defaultSize={350} minSize={300} className="flex flex-col">
       <ResizablePanelGroup orientation="vertical">
         {/* Code editor */}
         <ResizablePanel collapsible minSize={30}>
@@ -1076,3 +1080,4 @@ function LessonNavItem({
     </Link>
   );
 }
+

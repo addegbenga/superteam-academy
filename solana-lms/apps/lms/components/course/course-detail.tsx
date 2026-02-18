@@ -40,7 +40,7 @@ import type {
   Review,
 } from "@workspace/sanity-client";
 
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useSuspenseQuery } from "@tanstack/react-query";
 import { courseQueries, progressQueries } from "@/lib/queries/";
 import { useCourse } from "@/hooks/use-course";
 import { PortableTextRenderer } from "../markdown";
@@ -464,7 +464,7 @@ export default function CourseDetail() {
   const searchParams = useSearchParams();
   const courseId = params.courseId as string;
   const language = searchParams.get("lang") as string;
-  const data = useQuery(courseQueries.bySlug(courseId, language));
+  const data = useSuspenseQuery(courseQueries.bySlug(courseId, language));
 
   return (
     <div className="bg-background container mx-auto max-w-6xl pt-12 px-4 pb-24">
