@@ -40,11 +40,12 @@ import type {
   Review,
 } from "@workspace/sanity-client";
 
-import { useQuery} from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { courseQueries, progressQueries } from "@/lib/queries/";
 import { useCourse } from "@/hooks/use-course";
 import { PortableTextRenderer } from "../markdown";
 import { getCurrentUserId } from "@/hooks/auth";
+import { useI18n } from "@/lib/i18n";
 
 type IProps = {
   courseId?: string;
@@ -54,12 +55,13 @@ type IProps = {
 // ==================== COMPONENTS ====================
 
 function CourseHero({ courseId, data }: IProps) {
-  const {userId} = getCurrentUserId();
+  const { userId } = getCurrentUserId();
   const navigation = useRouter();
   const { enroll } = useCourse(courseId as string);
   const progress = useQuery(
     progressQueries.course(userId, data?._id as string),
   );
+  const { t } = useI18n();
 
   const modules = data?.modules as unknown as Array<
     Omit<Module, "lessons"> & { lessons: Lesson[] }
@@ -92,7 +94,7 @@ function CourseHero({ courseId, data }: IProps) {
         <div className="flex-1 space-y-3">
           <div className="flex items-center gap-2 text-sm font-mono text-muted-foreground">
             <span className="hover:text-primary cursor-pointer transition-colors">
-              Courses
+              {t("courseDetail.courses")}
             </span>
             <ChevronRight className="w-4 h-4" />
             <span className="text-primary tracking-tight">{data?.title}</span>
@@ -121,10 +123,12 @@ function CourseHero({ courseId, data }: IProps) {
             </div>
             <div className="flex items-center gap-2">
               <BookOpen className="w-4 h-4 text-primary" />{" "}
-              {data?.modules?.length} lessons
+              {data?.modules?.length}{" "}
+              {t("courses.lessons", { count: data?.modules?.length || 0 })}
             </div>
             <div className="flex items-center gap-2">
-              <Globe className="w-4 h-4 text-primary" /> 2+ languages
+              <Globe className="w-4 h-4 text-primary" />{" "}
+              {t("courses.languages")}
             </div>
             <div className="flex items-center gap-2 capitalize">
               <Zap className="w-4 h-4 text-primary " /> {data?.difficulty}
@@ -154,10 +158,10 @@ function CourseHero({ courseId, data }: IProps) {
               className="font-bold w-40 px-4 shadow-[0_0_20px_-5px_rgba(20,241,149,0.5)] transition-all hover:scale-105 active:scale-95"
             >
               {progress.isPending
-                ? "Loading..."
+                ? t("courses.loading")
                 : progress?.data?.enrolled
-                  ? " Continue learning "
-                  : "Enroll now"}
+                  ? t("courses.continueLearning")
+                  : t("courses.enrollNow")}
             </Button>
 
             {/* </Link> */}
@@ -195,8 +199,8 @@ function CourseHero({ courseId, data }: IProps) {
               <span className="text-sm font-medium text-muted-foreground">
                 {data?.stats?.totalEnrollments &&
                 data.stats.totalEnrollments > 0
-                  ? `${data.stats.totalEnrollments} Students enrolled`
-                  : `1+ Students enrolled`}
+                  ? `${data.stats.totalEnrollments} ${t("courses.enrolled")}`
+                  : `1+ ${t("courses.enrolled")}`}
               </span>
             </div>
           </div>
@@ -207,9 +211,12 @@ function CourseHero({ courseId, data }: IProps) {
 }
 
 function LearningObjectives({ data }: IProps) {
+  const { t } = useI18n();
   return (
     <section className="space-y-6">
-      <h3 className="text-xl tracking-tight font-bold">What you'll learn</h3>
+      <h3 className="text-xl tracking-tight font-bold">
+        {t("courseDetail.whatYouLearn")}
+      </h3>
       <div className="grid md:grid-cols-2 gap-y-4 gap-x-8">
         {data?.learningObjectives?.map((item, i) => (
           <div key={i} className="flex items-start gap-3">
@@ -225,15 +232,18 @@ function LearningObjectives({ data }: IProps) {
 }
 
 function CourseDescription({ data }: IProps) {
+  const { t } = useI18n();
   return (
     <section className="space-y-4">
-      <h3 className="text-xl tracking-tight font-bold">Course description</h3>
+      <h3 className="text-xl tracking-tight font-bold">
+        {t("courseDetail.courseDescription")}
+      </h3>
       <PortableTextRenderer content={data?.fullDescription as any} />
       <Button
         variant="link"
         className="text-primary p-0 h-auto font-bold flex items-center gap-1 group"
       >
-        Read more{" "}
+        {t("courseDetail.readMore")}{" "}
         <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
       </Button>
     </section>
@@ -241,11 +251,12 @@ function CourseDescription({ data }: IProps) {
 }
 
 function InstructorsSection({ data }: IProps) {
+  const { t } = useI18n();
   const instructors = data?.instructors as unknown as Instructor[];
   return (
     <section className="space-y-6">
       <h3 className="text-xl tracking-tight font-bold">
-        Meet your instructors
+        {t("courseDetail.meetInstructors")}
       </h3>
       <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
         {instructors?.map((ins: Instructor) => (
@@ -281,6 +292,7 @@ function InstructorsSection({ data }: IProps) {
 }
 
 function SyllabusSection({ data }: IProps) {
+  const { t } = useI18n();
   const modules = data?.modules as unknown as Array<
     Omit<Module, "lessons"> & { lessons: Lesson[] }
   >;
@@ -320,7 +332,7 @@ function SyllabusSection({ data }: IProps) {
                     </span>
                     <span className="flex items-center gap-1">
                       <BookOpen className="w-3 h-3" /> {module.lessons.length}{" "}
-                      lessons
+                      {t("courses.lessons", { count: module.lessons.length })}
                     </span>
                   </div>
                 </div>
@@ -362,13 +374,13 @@ function TestimonialsSection({
 }: {
   data: IProps & { reviews: Review[] };
 }) {
+  const { t } = useI18n();
   return (
     <section className="space-y-10 pt-8">
       <div className="space-y-2">
-        <h3 className="text-2xl font-bold">Testimonials</h3>
+        <h3 className="text-2xl font-bold">{t("courseDetail.testimonials")}</h3>
         <p className="text-muted-foreground">
-          Here's what our students are saying about their experience with Solana
-          Academy:
+          {t("courseDetail.studentExperience")}
         </p>
       </div>
       <div className="grid md:grid-cols-2 gap-6">
@@ -400,6 +412,7 @@ function TestimonialsSection({
 }
 
 function CourseSidebar({ data }: IProps) {
+  const { t } = useI18n();
   const completionAchievement =
     data?.completionAchievement as unknown as Achievement;
   return (
@@ -408,7 +421,7 @@ function CourseSidebar({ data }: IProps) {
         <CardHeader>
           <div className="flex items-center justify-between mb-2">
             <Badge className="bg-primary/20 text-primary border-primary/20">
-              Available
+              {t("courseDetail.available")}
             </Badge>
           </div>
         </CardHeader>
@@ -432,7 +445,7 @@ function CourseSidebar({ data }: IProps) {
             variant="outline"
             className="w-full border-white/10 hover:bg-white/5 group"
           >
-            Learn more{" "}
+            {t("common.learnMore")}{" "}
             <ChevronRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
           </Button>
         </CardContent>
@@ -445,10 +458,11 @@ function CourseSidebar({ data }: IProps) {
           </div>
           <div className="flex-1">
             <div className="text-sm text-muted-foreground mb-1">
-              This course is sponsored by
+              {t("courseDetail.sponsoredBy")}
             </div>
             <div className="font-bold flex items-center gap-2">
-              <Shield className="w-4 h-4 text-primary" /> Solana Foundation
+              <Shield className="w-4 h-4 text-primary" />{" "}
+              {t("courseDetail.solanaFoundation")}
             </div>
           </div>
         </CardContent>

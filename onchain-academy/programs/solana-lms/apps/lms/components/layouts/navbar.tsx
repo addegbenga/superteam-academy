@@ -15,18 +15,21 @@ import { StreakPopover } from "../streak";
 import { usePathname } from "next/navigation";
 import { cn } from "@workspace/ui/lib/utils";
 import { WalletPopover } from "../wallet";
+import { useI18n } from "@/lib/i18n";
+import { LanguageSwitcher } from "../language-switcher";
 
 export function Navbar() {
   const pathname = usePathname();
   const { userId } = getCurrentUserId();
   const { data: user } = useQuery(userQueries.profile(userId));
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const { t } = useI18n();
 
   const navItems = [
-    { label: "Courses", href: "/course" },
-    { label: "Leaderboard", href: "/leaderboard" },
-    { label: "Profile", href: "/profile" },
-    { label: "Certificate", href: "/certificate" },
+    { label: t("nav.courses"), href: "/course" },
+    { label: t("nav.leaderboard"), href: "/leaderboard" },
+    { label: t("nav.profile"), href: "/profile" },
+    { label: t("nav.certificates"), href: "/certificate" },
   ];
 
   const isActive = (href: string) =>
@@ -105,6 +108,7 @@ export function Navbar() {
 
         {/* Desktop Right */}
         <div className="hidden md:flex items-center gap-3">
+          <LanguageSwitcher />
           <StreakPopover
             xp={user?.xp ?? 0}
             streak={user?.streak.current ?? 0}
@@ -145,7 +149,9 @@ export function Navbar() {
                 <div className="w-px h-3 bg-white/10" />
                 <div className="flex items-center gap-1.5 text-xs font-mono text-orange-400">
                   <Trophy className="w-3.5 h-3.5" />
-                  <span>{user?.streak.current ?? 0} Day Streak</span>
+                  <span>
+                    {user?.streak.current ?? 0} {t("home.dayStreak")}
+                  </span>
                 </div>
               </div>
 

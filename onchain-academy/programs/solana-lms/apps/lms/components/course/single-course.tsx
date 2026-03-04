@@ -17,7 +17,7 @@ import {
   FileText,
   Video,
 } from "lucide-react";
-import {useState } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { Button } from "@workspace/ui/components/button";
@@ -38,6 +38,7 @@ import { courseQueries, lessonQueries, progressQueries } from "@/lib/queries";
 import { Lesson, Module } from "@workspace/sanity-client";
 import { useCourse } from "@/hooks/use-course";
 import { getCurrentUserId } from "@/hooks/auth";
+import { useI18n } from "@/lib/i18n";
 
 /* =====================================================
    TYPES
@@ -98,9 +99,10 @@ export default function Course() {
   const courseSlug = params.courseId as string;
   const lessonSlug = params.courseLessonId?.[0] as string;
   const language = searchParams.get("lang") as string;
-  const {userId} = getCurrentUserId();
+  const { userId } = getCurrentUserId();
   const [showCodeEditor, setShowCodeEditor] = useState(false);
   const { completeLesson } = useCourse(courseSlug);
+  const { t } = useI18n();
 
   const { data: course } = useQuery(courseQueries.bySlug(courseSlug, language));
   const { data: progress } = useQuery(
@@ -211,6 +213,7 @@ function Header({
   showCodeEditor: boolean;
   onToggleEditor: () => void;
 }) {
+  const { t } = useI18n();
   return (
     <header className="h-14 border-b border-white/5 bg-black/50 backdrop-blur flex items-center justify-between px-4 shrink-0">
       <div className="flex items-center gap-4">
@@ -230,7 +233,7 @@ function Header({
       <div className="flex items-center gap-3">
         <div className="hidden md:flex items-center gap-2 text-xs bg-white/5 px-3 py-1.5 rounded-md border border-white/5">
           <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
-          Devnet Active
+          {t("lesson.devnetActive")}
         </div>
 
         {/* Only show toggle when there's a code challenge — otherwise editor is always visible */}
@@ -243,7 +246,7 @@ function Header({
           >
             <Code className="w-4 h-4" />
             <span className="hidden sm:inline">
-              {showCodeEditor ? "Hide" : "Show"} Editor
+              {showCodeEditor ? t("lesson.hideEditor") : t("lesson.showEditor")}
             </span>
           </Button>
         )}
@@ -271,6 +274,7 @@ function Sidebar({
   completedLessons: string[];
   completionPercentage: number;
 }) {
+  const { t } = useI18n();
   const { data: course } = useQuery(courseQueries.bySlug(courseSlug, language));
   const modules = course?.modules as unknown as Array<
     Omit<Module, "lessons"> & { lessons: Lesson[] }
@@ -287,11 +291,11 @@ function Sidebar({
     <div className="h-full max-w-[18rem] hidden lg:flex flex-col">
       <div className="p-4 border-b border-border/50">
         <p className="font-medium text-muted-foreground tracking-tight text-xs mb-1">
-          Course progress
+          {t("lesson.courseProgress")}
         </p>
         <Progress value={completionPercentage} className="h-1 bg-white/10" />
         <p className="text-xs tracking-tight text-muted-foreground mt-1">
-          {completionPercentage}% Complete
+          {completionPercentage}% {t("home.complete")}
         </p>
       </div>
 
@@ -345,6 +349,7 @@ function LessonPanel({
   nav: LessonNavigation;
   onNext: () => void;
 }) {
+  const { t } = useI18n();
   const { data: lesson } = useQuery(lessonQueries.bySlug(lessonSlug, language));
   const hasVideo = !!(lesson?.hasVideo && lesson.videoUrl);
   const [activeTab, setActiveTab] = useState<"content" | "video">("content");
@@ -375,13 +380,13 @@ function LessonPanel({
             active={activeTab === "content"}
             onClick={() => setActiveTab("content")}
             icon={<FileText className="w-3.5 h-3.5" />}
-            label="Content"
+            label={t("lesson.content")}
           />
           <TabButton
             active={activeTab === "video"}
             onClick={() => setActiveTab("video")}
             icon={<Video className="w-3.5 h-3.5" />}
-            label="Video"
+            label={t("lesson.video")}
           />
         </div>
       )}
@@ -486,12 +491,13 @@ function VideoPlayer({
 ===================================================== */
 
 function ChallengeBlock({ prompt }: { prompt: string }) {
+  const { t } = useI18n();
   return (
     <div className="rounded-lg border border-white/10 overflow-hidden">
       <div className="flex items-center gap-2 px-4 py-2.5 border-b border-white/10 bg-white/3">
         <Trophy className="w-3.5 h-3.5 text-yellow-400" />
         <span className="text-xs font-semibold text-yellow-400 uppercase tracking-wider">
-          Challenge
+          {t("lesson.challenge")}
         </span>
       </div>
       <p className="px-4 py-3 text-sm text-muted-foreground leading-relaxed">
@@ -502,6 +508,7 @@ function ChallengeBlock({ prompt }: { prompt: string }) {
 }
 
 function HintsBlock({ hints }: { hints: string[] }) {
+  const { t } = useI18n();
   const [visible, setVisible] = useState(false);
 
   return (
@@ -513,7 +520,7 @@ function HintsBlock({ hints }: { hints: string[] }) {
         <div className="flex items-center gap-2">
           <Lightbulb className="w-3.5 h-3.5 text-blue-400" />
           <span className="text-xs font-semibold text-blue-400 uppercase tracking-wider">
-            Hints
+            {t("lesson.hints")}
           </span>
           <span className="text-xs text-muted-foreground/50">
             {hints.length}
@@ -550,12 +557,13 @@ function ResourcesBlock({
 }: {
   resources: Array<{ _key: string; title: string; type: string; url: string }>;
 }) {
+  const { t } = useI18n();
   return (
     <div className="rounded-lg border border-white/10 overflow-hidden">
       <div className="flex items-center gap-2 px-4 py-2.5 border-b border-white/10 bg-white/[0.03]">
         <BookOpen className="w-3.5 h-3.5 text-muted-foreground" />
         <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
-          Resources
+          {t("lesson.resources")}
         </span>
       </div>
       <div className="divide-y divide-white/5">
@@ -599,6 +607,7 @@ function LessonFooter({
   onNext: () => void;
   xpReward?: number | null;
 }) {
+  const { t } = useI18n();
   const { prev, next, isCurrentCompleted } = nav;
 
   return (
@@ -607,7 +616,7 @@ function LessonFooter({
         <Link href={prev.slug}>
           <Button variant="outline" className="gap-1.5 text-muted-foreground">
             <ChevronLeft className="w-4 h-4" />
-            <span className="hidden sm:inline">Previous</span>
+            <span className="hidden sm:inline">{t("lesson.previous")}</span>
           </Button>
         </Link>
       ) : (
@@ -617,7 +626,7 @@ function LessonFooter({
           className="gap-1.5 text-muted-foreground"
         >
           <ChevronLeft className="w-4 h-4" />
-          <span className="hidden sm:inline">Previous</span>
+          <span className="hidden sm:inline">{t("lesson.previous")}</span>
         </Button>
       )}
 
@@ -629,13 +638,13 @@ function LessonFooter({
         >
           {isCurrentCompleted ? (
             <>
-              Next Lesson
+              {t("lesson.nextLesson")}
               <ChevronRight className="w-4 h-4" />
             </>
           ) : (
             <>
               <CheckCircle className="w-4 h-4" />
-              Complete
+              {t("lesson.complete")}
               {xpReward && (
                 <span className="text-xs text-yellow-400 font-normal">
                   +{xpReward} XP
@@ -652,7 +661,7 @@ function LessonFooter({
             className="gap-1.5 text-accent-foreground/60"
           >
             <CheckCircle className="w-4 h-4" />
-            Complete Lesson
+            {t("lesson.completeLesson")}
             {xpReward && (
               <span className="text-xs text-yellow-400 font-normal">
                 +{xpReward} XP
@@ -676,6 +685,7 @@ function EditorPanel({
   lessonSlug: string;
   language: string;
 }) {
+  const { t } = useI18n();
   const { data: lesson } = useQuery(lessonQueries.bySlug(lessonSlug, language));
 
   const [code, setCode] = useState(lesson?.starterCode?.code ?? "");
@@ -725,14 +735,20 @@ function EditorPanel({
         setActiveTab("tests");
 
         const allPassed = results.every((r) => r.passed);
-        toast(allPassed ? "All tests passed! 🎉" : "Some tests failed", {
-          description: allPassed
-            ? "Great work — your solution is correct"
-            : `${results.filter((r) => r.passed).length}/${results.length} tests passing`,
-        });
+        toast(
+          allPassed ? t("lesson.allTestsPassed") : t("lesson.someTestsFailed"),
+          {
+            description: allPassed
+              ? t("lesson.greatWork")
+              : t("lesson.testsPassing", {
+                  passed: results.filter((r) => r.passed).length.toString(),
+                  total: results.length.toString(),
+                }),
+          },
+        );
       } else {
-        toast("Run complete!", {
-          description: "Program deployed and executed successfully",
+        toast(t("lesson.runComplete"), {
+          description: t("lesson.programDeployed"),
         });
       }
 
@@ -774,11 +790,11 @@ function EditorPanel({
                 >
                   {showSolution ? (
                     <>
-                      <EyeOff className="w-3 h-3" /> Hide solution
+                      <EyeOff className="w-3 h-3" /> {t("lesson.hideSolution")}
                     </>
                   ) : (
                     <>
-                      <Eye className="w-3 h-3" /> Show solution
+                      <Eye className="w-3 h-3" /> {t("lesson.showSolution")}
                     </>
                   )}
                 </Button>
@@ -806,7 +822,7 @@ function EditorPanel({
                 )}
               >
                 <Terminal className="w-3 h-3" />
-                Terminal
+                {t("lesson.terminal")}
               </button>
 
               {visibleTestCases.length > 0 ? (
@@ -820,7 +836,7 @@ function EditorPanel({
                   )}
                 >
                   <CheckCircle className="w-3 h-3" />
-                  Tests
+                  {t("lesson.tests")}
                   {testResults.length > 0 && (
                     <span
                       className={cn(
@@ -845,7 +861,7 @@ function EditorPanel({
                     onClick={runCode}
                     disabled={isRunning}
                   >
-                    {isRunning ? "Running..." : "Run"}
+                    {isRunning ? t("lesson.running") : t("lesson.run")}
                     <Play className="w-2.5 h-2.5 fill-current" />
                   </Button>
                 </div>
@@ -861,7 +877,7 @@ function EditorPanel({
                     onClick={runCode}
                     disabled={isRunning}
                   >
-                    {isRunning ? "Running..." : "Run"}
+                    {isRunning ? t("lesson.running") : t("lesson.run")}
                     <Play className="w-2.5 h-2.5 fill-current" />
                   </Button>
                 </div>
@@ -879,7 +895,7 @@ function EditorPanel({
 
                   {consoleOutput.length === 0 && !isRunning && (
                     <div className="text-muted-foreground/30 italic">
-                      Press Run to execute your program...
+                      {t("lesson.pressRun")}
                     </div>
                   )}
 
@@ -971,13 +987,17 @@ function EditorPanel({
                         {!result.passed && (
                           <div className="pl-5 mt-2 space-y-1 text-muted-foreground">
                             <div>
-                              <span className="text-white/40">expected </span>
+                              <span className="text-white/40">
+                                {t("lesson.expected")}{" "}
+                              </span>
                               <span className="text-green-400/80">
                                 {result.expected}
                               </span>
                             </div>
                             <div>
-                              <span className="text-white/40">got </span>
+                              <span className="text-white/40">
+                                {t("lesson.got")}{" "}
+                              </span>
                               <span className="text-red-400/80">
                                 {result.got}
                               </span>

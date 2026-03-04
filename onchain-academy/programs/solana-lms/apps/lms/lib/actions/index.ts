@@ -28,9 +28,10 @@ export async function enrollInCourse({ courseId, userId }: EnrollPayload) {
         userName: userId,
       }),
     });
-
     if (!response.ok) {
-      throw new Error(`Enrollment API responded with ${response.status}`);
+      return Promise.reject(
+        new Error(`Enrollment API responded with ${response.status}`),
+      );
     }
 
     revalidatePath(`/course/${courseId}`);
@@ -63,8 +64,13 @@ export async function completeLesson({
       }),
     });
 
+    // if (!response.ok) {
+    //   throw new Error(`Progress API responded with ${response.status}`);
+    // }
     if (!response.ok) {
-      throw new Error(`Progress API responded with ${response.status}`);
+      return Promise.reject(
+        new Error(`Progress API responded with ${response.status}`),
+      );
     }
 
     revalidatePath(`/course/${courseId}`);
@@ -89,7 +95,9 @@ export async function completeCourse({ courseId, userId }: EnrollPayload) {
     });
 
     if (!response.ok) {
-      throw new Error(`Complete API responded with ${response.status}`);
+      return Promise.reject(
+        new Error(`Complete API responded with ${response.status}`),
+      );
     }
 
     revalidatePath(`/course/${courseId}`);

@@ -1,3 +1,4 @@
+"use client"
 import {
   Avatar,
   AvatarFallback,
@@ -24,8 +25,10 @@ import {
   Shield,
   Layout as LayoutIcon,
 } from "lucide-react";
+import { useI18n } from "@/lib/i18n";
 
 export default function Profile() {
+  const { t } = useI18n();
   const achievements = [
     { name: "First Steps", icon: "🚀", date: "Jan 12, 2024" },
     { name: "Code Warrior", icon: "⚔️", date: "Jan 20, 2024" },
@@ -85,7 +88,7 @@ export default function Profile() {
                   <div>
                     <div className="text-xl font-bold font-heading">1,240</div>
                     <div className="text-xs text-muted-foreground uppercase tracking-widest">
-                      Total XP
+                      {t("profile.totalXP")}
                     </div>
                   </div>
                   <div>
@@ -93,7 +96,7 @@ export default function Profile() {
                       Level 12
                     </div>
                     <div className="text-xs text-muted-foreground uppercase tracking-widest">
-                      Rank
+                      {t("profile.rank")}
                     </div>
                   </div>
                 </div>
@@ -107,13 +110,13 @@ export default function Profile() {
           <Card className="border-white/10 bg-white/5">
             <CardHeader className="flex flex-row items-center justify-between">
               <CardTitle className="text-xl font-heading font-bold">
-                On-Chain Credentials
+                {t("profile.onChainCredentials")}
               </CardTitle>
               <Badge
                 variant="outline"
                 className="border-primary/20 bg-primary/5 text-primary"
               >
-                3 NFT Badges
+                {t("profile.nftBadges")}
               </Badge>
             </CardHeader>
             <CardContent>
@@ -137,7 +140,7 @@ export default function Profile() {
           <Card className="border-white/10 bg-white/5">
             <CardHeader>
               <CardTitle className="text-xl font-heading font-bold">
-                Achievement Showcase
+                {t("profile.achievementShowcase")}
               </CardTitle>
             </CardHeader>
             <CardContent>

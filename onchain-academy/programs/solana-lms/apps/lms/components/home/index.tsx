@@ -30,6 +30,7 @@ import {
   buildHeatmapData,
   cellStyle,
 } from "@/lib/helper";
+import { useI18n } from "@/lib/i18n";
 
 // ─── Stat Card ────────────────────────────────────────────────────────────────
 
@@ -86,6 +87,7 @@ function AchievementTile({
   description: string;
   unlocked: boolean;
 }) {
+  const { t } = useI18n();
   const Icon = ICONS[id];
   return (
     <Popover>
@@ -138,7 +140,7 @@ function AchievementTile({
               <p
                 className={`text-[10px] leading-tight ${unlocked ? "text-primary/70" : "text-muted-foreground/50"}`}
               >
-                {unlocked ? "Unlocked ✓" : "Not yet earned"}
+                {unlocked ? t("home.unlocked") : t("home.notYetEarned")}
               </p>
             </div>
           </div>
@@ -160,6 +162,7 @@ function ActivityHeatmap({
   streakHistory: Date[];
   achievements: Achievement[];
 }) {
+  const { t } = useI18n();
   const today = new Date();
   const { weeks, monthLabels } = buildHeatmapData(streakHistory, achievements);
   const CELL = 10,
@@ -237,16 +240,16 @@ function ActivityHeatmap({
                               <div className="flex items-center gap-1.5">
                                 <ICONS.streak className="w-3 h-3 text-orange-400 fill-orange-400 shrink-0" />
                                 <span className="text-[10px] text-orange-300">
-                                  Streak day
+                                  {t("home.streakDay")}
                                 </span>
                               </div>
                             ) : (
                               <span className="text-[10px] text-muted-foreground">
                                 {isToday
-                                  ? "Today — no activity yet"
+                                  ? t("home.todayNoActivity")
                                   : inFuture
-                                    ? "Future"
-                                    : "No activity"}
+                                    ? t("home.future")
+                                    : t("home.noActivity")}
                               </span>
                             )}
                           </div>
@@ -260,7 +263,7 @@ function ActivityHeatmap({
           </div>
         </div>
         <div className="flex items-center gap-1.5 mt-3 text-[9px] text-muted-foreground/40">
-          <span>Less</span>
+          <span>{t("home.less")}</span>
           <div className="w-2 h-2 rounded-sm bg-white/6" />
           <div className="w-2 h-2 rounded-sm bg-primary/40" />
           <div className="w-2 h-2 rounded-sm bg-primary/70" />
@@ -275,9 +278,10 @@ function ActivityHeatmap({
 // ─── Dashboard ────────────────────────────────────────────────────────────────
 
 export default function DashboardHome() {
-  const {userId} = getCurrentUserId();
+  const { userId } = getCurrentUserId();
   const { data: user } = useQuery(userQueries.profile(userId));
   const { data, isLoading } = useEnrolledCoursesWithDetails(userId);
+  const { t } = useI18n();
 
   const streak = user?.streak.current ?? 0;
   const longest = user?.streak.longest ?? 0;
@@ -294,13 +298,12 @@ export default function DashboardHome() {
       {/* ── Header ── */}
       <div className="pb-3">
         <h1 className="text-3xl tracking-tighter font-bold mb-1">
-          {/* Welcome back, Dev 👋 */}
-          Welcome back 👋
+          {t("home.welcomeBack")}
         </h1>
         <p className="text-sm tracking-tight text-muted-foreground">
           {streak > 0
-            ? `You're on a ${streak} day streak! Keep it up.`
-            : "Complete a lesson today to start your streak!"}
+            ? t("home.streakMessage", { streak: streak.toString() })
+            : t("home.startStreak")}
         </p>
       </div>
 
@@ -308,13 +311,13 @@ export default function DashboardHome() {
       <div className="grid grid-cols-4 gap-3">
         <StatCard
           icon={<ICONS.xp className="w-5 h-5 text-primary" />}
-          label="Total XP"
+          label={t("home.totalXP")}
           value={xp.toLocaleString()}
           accent="bg-primary"
           popoverContent={
             <div className="p-4 space-y-3">
               <p className="text-xs text-muted-foreground uppercase tracking-widest font-medium">
-                XP Breakdown
+                {t("home.xpBreakdown")}
               </p>
               <div className="flex items-end gap-2">
                 <span className="text-3xl font-black">
@@ -324,12 +327,18 @@ export default function DashboardHome() {
               </div>
               <div className="space-y-1.5">
                 <div className="flex justify-between text-xs">
-                  <span className="text-muted-foreground">Level {level}</span>
+                  <span className="text-muted-foreground">
+                    {t("home.level")} {level}
+                  </span>
                   <span className="text-primary">{xp % 500} / 500 XP</span>
                 </div>
                 <Progress value={(xp % 500) / 5} className="h-1.5" />
                 <p className="text-[10px] text-muted-foreground">
-                  {500 - (xp % 500)} XP to Level {level + 1}
+                  {500 - (xp % 500)}{" "}
+                  {t("home.toNextLevel", {
+                    xp: (500 - (xp % 500)).toString(),
+                    level: (level + 1).toString(),
+                  })}
                 </p>
               </div>
             </div>
@@ -338,29 +347,31 @@ export default function DashboardHome() {
 
         <StatCard
           icon={<ICONS.streak className="w-5 h-5 text-orange-400" />}
-          label="Day Streak"
+          label={t("home.dayStreak")}
           value={`${streak}`}
           accent="bg-orange-500"
           popoverContent={
             <div className="p-4 space-y-3">
               <p className="text-xs text-muted-foreground uppercase tracking-widest font-medium">
-                Streak
+                {t("home.dayStreak")}
               </p>
               <div className="flex items-end gap-2">
                 <span className="text-3xl font-black">{streak}</span>
-                <span className="text-sm text-orange-400 mb-1">days</span>
+                <span className="text-sm text-orange-400 mb-1">
+                  {t("home.days")}
+                </span>
               </div>
               <div className="flex items-center justify-between p-2.5 rounded-xl bg-white/5 border border-white/5">
                 <span className="text-xs text-muted-foreground">
-                  Longest streak
+                  {t("home.longestStreak")}
                 </span>
                 <span className="text-xs font-bold text-orange-400">
-                  {longest} days 🔥
+                  {longest} {t("home.days")} 🔥
                 </span>
               </div>
               {streak < 7 && (
                 <p className="text-[10px] text-muted-foreground">
-                  {7 - streak} days to Week Warrior
+                  {t("home.weekWarrior", { days: (7 - streak).toString() })}
                 </p>
               )}
             </div>
@@ -369,14 +380,14 @@ export default function DashboardHome() {
 
         <StatCard
           icon={<ICONS.level className="w-5 h-5 text-blue-400" />}
-          label="Level"
+          label={t("home.level")}
           value={`Lvl ${level}`}
           accent="bg-blue-500"
         />
 
         <StatCard
           icon={<ICONS.trophy className="w-5 h-5 text-yellow-400" />}
-          label="Achievements"
+          label={t("home.achievements")}
           value={`${achievements.length}/${ACHIEVEMENT_DEFS.length}`}
           accent="bg-yellow-500"
         />
@@ -398,14 +409,16 @@ export default function DashboardHome() {
             ) : data?.length ? (
               <div className="rounded-2xl border border-white/5 bg-white/2 overflow-hidden max-h-96 flex flex-col">
                 <div className="px-5 py-4 border-b border-white/5 flex items-center justify-between shrink-0">
-                  <h3 className="text-sm font-semibold">My Courses</h3>
+                  <h3 className="text-sm font-semibold">
+                    {t("home.myCourses")}
+                  </h3>
                   <Link href="/course">
                     <Button
                       variant="ghost"
                       size="sm"
                       className="text-xs text-muted-foreground h-6 px-2 gap-0.5 hover:text-foreground"
                     >
-                      Browse all
+                      {t("home.browseAll")}
                       <ICONS.chevronRight className="w-3 h-3" />
                     </Button>
                   </Link>
@@ -444,12 +457,16 @@ export default function DashboardHome() {
                             {done ? (
                               <p className="inline-flex items-center gap-1 text-[9px] font-semibold uppercase tracking-widest text-emerald-400">
                                 <CheckCircle2 className="w-2.5 h-2.5" />{" "}
-                                <span className="mt-0.5">Completed</span>
+                                <span className="mt-0.5">
+                                  {t("home.completed")}
+                                </span>
                               </p>
                             ) : (
                               <p className="inline-flex items-center gap-1 text-[9px] font-semibold uppercase tracking-widest text-primary/70">
                                 <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
-                                <span className="mt-0.5">In progress</span>
+                                <span className="mt-0.5">
+                                  {t("home.inProgress")}
+                                </span>
                               </p>
                             )}
                           </div>
@@ -464,13 +481,13 @@ export default function DashboardHome() {
                               <span className="text-white/70 font-medium">
                                 {progress.completedLessons.length}
                               </span>{" "}
-                              lessons
+                              {t("home.lessons")}
                             </span>
                             <span className="text-[10px] text-muted-foreground">
                               <span className="text-primary/80 font-medium">
                                 +{progress.xpEarned}
                               </span>{" "}
-                              XP
+                              {t("home.xp")}
                             </span>
                           </div>
                         </div>
@@ -486,7 +503,7 @@ export default function DashboardHome() {
                       variant="outline"
                       size="sm"
                     >
-                      Browse More Courses
+                      {t("home.browseMoreCourses")}
                     </Button>
                   </Link>
                 </div>
@@ -499,10 +516,10 @@ export default function DashboardHome() {
                   </div>
                   <div>
                     <p className="text-sm tracking-tight font-medium">
-                      Start your first course
+                      {t("home.startFirstCourse")}
                     </p>
                     <p className="text-xs text-muted-foreground">
-                      Browse what's available →
+                      {t("home.browseAvailable")}
                     </p>
                   </div>
                 </div>
@@ -540,14 +557,14 @@ export default function DashboardHome() {
                               <span className="flex items-center gap-1.5 px-2 py-1 rounded-full bg-emerald-500/20 border border-emerald-500/30 backdrop-blur-sm">
                                 <CheckCircle2 className="w-3 h-3 text-emerald-400" />
                                 <span className="text-[10px] font-semibold text-emerald-300">
-                                  Completed
+                                  {t("home.completed")}
                                 </span>
                               </span>
                             ) : (
                               <span className="flex items-center gap-1.5 px-2 py-1 rounded-full bg-primary/20 border border-primary/30 backdrop-blur-sm">
                                 <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
                                 <span className="text-[10px] font-semibold text-primary/90">
-                                  In Progress
+                                  {t("home.inProgress")}
                                 </span>
                               </span>
                             )}
@@ -557,7 +574,7 @@ export default function DashboardHome() {
                         {/* Course info */}
                         <div className="px-4 py-3 flex flex-col flex-1">
                           <p className="text-[9px] text-muted-foreground uppercase tracking-widest font-medium mb-1">
-                            Recently Active
+                            {t("home.recentlyActive")}
                           </p>
                           <h3 className="text-sm font-bold leading-snug line-clamp-1 mb-2">
                             {course?.title}
@@ -573,7 +590,7 @@ export default function DashboardHome() {
                                 {progress.completionPercentage}%
                               </p>
                               <p className="text-[9px] text-muted-foreground mt-0.5">
-                                done
+                                {t("home.done")}
                               </p>
                             </div>
                             <div className="w-px h-6 bg-white/10" />
@@ -582,7 +599,7 @@ export default function DashboardHome() {
                                 {progress.completedLessons.length}
                               </p>
                               <p className="text-[9px] text-muted-foreground mt-0.5">
-                                lessons
+                                {t("home.lessons")}
                               </p>
                             </div>
                             <div className="w-px h-6 bg-white/10" />
@@ -591,7 +608,7 @@ export default function DashboardHome() {
                                 +{progress.xpEarned}
                               </p>
                               <p className="text-[9px] text-muted-foreground mt-0.5">
-                                XP
+                                {t("home.xp")}
                               </p>
                             </div>
                           </div>
@@ -606,8 +623,8 @@ export default function DashboardHome() {
                                 className="w-full gap-1.5 text-xs h-8"
                               >
                                 {isCompleted
-                                  ? "Review Course"
-                                  : "Continue Learning"}
+                                  ? t("home.reviewCourse")
+                                  : t("home.continueLearning")}
                                 <ArrowRight className="w-3 h-3" />
                               </Button>
                             </Link>
@@ -626,9 +643,9 @@ export default function DashboardHome() {
           {/* ── Activity Heatmap (left column, bottom on mobile) ── */}
           <div className="rounded-2xl border border-white/5 bg-white/2 p-5 h-full">
             <div className="mb-4">
-              <h3 className="text-sm font-semibold">Activity Log</h3>
+              <h3 className="text-sm font-semibold">{t("home.activityLog")}</h3>
               <p className="text-[11px] text-muted-foreground mt-0.5">
-                Your learning consistency this year
+                {t("home.learningConsistency")}
               </p>
             </div>
             <ActivityHeatmap
@@ -643,7 +660,9 @@ export default function DashboardHome() {
                 <div className="w-5 h-5 rounded-md bg-white/5 border border-white/8 flex items-center justify-center">
                   <Trophy className="w-3 h-3 text-yellow-400" />
                 </div>
-                <h3 className="text-sm font-semibold">Achievements</h3>
+                <h3 className="text-sm font-semibold">
+                  {t("home.achievements")}
+                </h3>
               </div>
               <span className="relative text-[10px] font-semibold text-muted-foreground tabular-nums px-1.5 py-0.5 rounded-md bg-white/5 border border-white/8">
                 <span className="absolute inset-0 rounded-md bg-yellow-400/10 blur-sm" />

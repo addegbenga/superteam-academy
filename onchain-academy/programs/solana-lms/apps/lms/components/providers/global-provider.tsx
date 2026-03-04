@@ -1,5 +1,3 @@
-
-
 "use client";
 
 import { QueryClientProvider } from "@tanstack/react-query";
@@ -17,6 +15,7 @@ import {
 } from "@solana/wallet-adapter-wallets";
 import { clusterApiUrl } from "@solana/web3.js";
 import { AuthProvider } from "./auth-provider";
+import { I18nProvider } from "@/lib/i18n";
 
 import "@solana/wallet-adapter-react-ui/styles.css";
 import { getQueryClient } from "./query-client";
@@ -39,7 +38,9 @@ export function GlobalProviders({ children }: { children: React.ReactNode }) {
       <ConnectionProvider endpoint={endpoint}>
         <WalletProvider wallets={wallets} autoConnect>
           <WalletModalProvider>
-            <AuthProvider>{children}</AuthProvider>
+            <I18nProvider>
+              <AuthProvider>{children}</AuthProvider>
+            </I18nProvider>
             <ReactQueryDevtools initialIsOpen={false} />
           </WalletModalProvider>
         </WalletProvider>

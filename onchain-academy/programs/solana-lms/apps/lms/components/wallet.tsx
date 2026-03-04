@@ -1,5 +1,12 @@
 "use client";
-import { Wallet, Copy, ExternalLink, LogOut, ChevronDown, CheckCircle2 } from "lucide-react";
+import {
+  Wallet,
+  Copy,
+  ExternalLink,
+  LogOut,
+  ChevronDown,
+  CheckCircle2,
+} from "lucide-react";
 import { useState } from "react";
 import { Button } from "@workspace/ui/components/button";
 import {
@@ -10,11 +17,13 @@ import {
 import { useWallet } from "@solana/wallet-adapter-react";
 import { cn } from "@workspace/ui/lib/utils";
 import { useAuth } from "./providers/auth-provider";
+import { useI18n } from "@/lib/i18n";
 
 export function WalletPopover() {
   const { publicKey, disconnect, connected } = useWallet();
-   const { showAuthModal } = useAuth();
+  const { showAuthModal } = useAuth();
   const [copied, setCopied] = useState(false);
+  const { t } = useI18n();
 
   const address = publicKey?.toBase58() ?? null;
   const shortAddress = address
@@ -28,22 +37,22 @@ export function WalletPopover() {
     setTimeout(() => setCopied(false), 1500);
   };
 
- if (!connected || !address) {
-  return (
-    <Button
-      onClick={showAuthModal}
-      className="flex items-center gap-2 h-8 px-3 rounded-full bg-background border border-border transition-all group hover:border-white/20"
-    >
-      <span className="relative flex h-2 w-2">
-        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-white/40 opacity-75" />
-        <span className="relative inline-flex rounded-full h-2 w-2 bg-white/30" />
-      </span>
-      <span className="text-xs text-white/50 group-hover:text-white/70 transition-colors">
-        Connect Wallet
-      </span>
-    </Button>
-  );
-}
+  if (!connected || !address) {
+    return (
+      <Button
+        onClick={showAuthModal}
+        className="flex items-center gap-2 h-8 px-3 rounded-full bg-background border border-border transition-all group hover:border-white/20"
+      >
+        <span className="relative flex h-2 w-2">
+          <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-white/40 opacity-75" />
+          <span className="relative inline-flex rounded-full h-2 w-2 bg-white/30" />
+        </span>
+        <span className="text-xs text-white/50 group-hover:text-white/70 transition-colors">
+          {t("nav.connectWallet")}
+        </span>
+      </Button>
+    );
+  }
 
   return (
     <Popover>
@@ -54,7 +63,9 @@ export function WalletPopover() {
             <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
             <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
           </span>
-          <span className="text-xs font-mono text-white/80">{shortAddress}</span>
+          <span className="text-xs font-mono text-white/80">
+            {shortAddress}
+          </span>
           <ChevronDown className="w-3 h-3 text-white/40 group-hover:text-white/60 transition-colors" />
         </button>
       </PopoverTrigger>
@@ -68,7 +79,7 @@ export function WalletPopover() {
         <div className="px-4 pt-4 pb-3 border-b border-white/5">
           <div className="flex items-center justify-between mb-1">
             <span className="text-[11px] font-medium text-white/40 uppercase tracking-widest">
-              Connected
+              {t("common.connected")}
             </span>
             <span className="flex items-center gap-1 text-[11px] text-emerald-400 font-medium">
               <span className="inline-block w-1.5 h-1.5 rounded-full bg-emerald-400" />
@@ -101,10 +112,12 @@ export function WalletPopover() {
             <span
               className={cn(
                 "text-sm transition-colors",
-                copied ? "text-emerald-400" : "text-white/70 group-hover:text-white",
+                copied
+                  ? "text-emerald-400"
+                  : "text-white/70 group-hover:text-white",
               )}
             >
-              {copied ? "Copied!" : "Copy address"}
+              {copied ? t("common.copied") : t("common.copy")}
             </span>
           </button>
 
@@ -116,7 +129,7 @@ export function WalletPopover() {
           >
             <ExternalLink className="w-4 h-4 text-white/40 group-hover:text-white/70 transition-colors" />
             <span className="text-sm text-white/70 group-hover:text-white transition-colors">
-              View on Solscan
+              {t("common.viewOnSolscan")}
             </span>
           </a>
 
@@ -128,7 +141,7 @@ export function WalletPopover() {
           >
             <LogOut className="w-4 h-4 text-white/40 group-hover:text-red-400 transition-colors" />
             <span className="text-sm text-white/70 group-hover:text-red-400 transition-colors">
-              Disconnect
+              {t("common.disconnect")}
             </span>
           </button>
         </div>

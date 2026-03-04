@@ -9,6 +9,7 @@ import {
   DialogTitle,
 } from "@workspace/ui/components/dialog";
 import Link from "next/link";
+import { useI18n } from "@/lib/i18n";
 
 interface AuthModalProps {
   open: boolean;
@@ -110,6 +111,7 @@ export function AuthModal({
 }: AuthModalProps) {
   const { connected, connecting, publicKey, select, wallets } = useWallet();
   const [isOpen, setIsOpen] = useState(open);
+  const { t } = useI18n();
 
   useEffect(() => {
     setIsOpen(open);
@@ -205,10 +207,10 @@ export function AuthModal({
           </svg>
 
           <h2 className="text-2xl font-bold  text-accent-foreground tracking-tighter">
-            Welcome to Solex
+            {t("auth.welcomeToSolex")}
           </h2>
           <p className="text-sm tracking-tight text-muted-foreground mt-2">
-            Connect your wallet to start learning
+            {t("auth.connectWalletStart")}
           </p>
         </div>
 
@@ -218,7 +220,7 @@ export function AuthModal({
             {connecting ? (
               <div className="flex items-center justify-center gap-3 py-8 text-muted-foreground">
                 <Loader2 className="h-5 w-5 animate-spin" />
-                <span>Connecting...</span>
+                <span>{t("auth.connecting")}</span>
               </div>
             ) : connected && publicKey ? (
               <div className="flex flex-col items-center gap-3 py-8">
@@ -227,7 +229,7 @@ export function AuthModal({
                 </div>
                 <div className="text-sm text-muted-foreground text-center">
                   <div className="text-green-500 font-medium mb-1">
-                    Connected
+                    {t("common.connected")}
                   </div>
                   <div className="font-mono text-xs">
                     {publicKey.toBase58().slice(0, 4)}...
@@ -259,18 +261,18 @@ export function AuthModal({
                           {wallet.name}
                           {isInstalled ? (
                             <span className="px-2 py-0.5 text-[10px] rounded-full bg-green-500/20 text-green-500 font-medium">
-                              Detected
+                              {t("auth.detected")}
                             </span>
                           ) : (
                             <span className="px-2 py-0.5 text-[10px] rounded-full bg-white/10 text-muted-foreground font-medium">
-                              Not Installed
+                              {t("auth.notInstalled")}
                             </span>
                           )}
                         </div>
                         <div className="text-xs text-muted-foreground">
                           {isInstalled
                             ? wallet.description
-                            : "Click to install"}
+                            : t("auth.clickToInstall")}
                         </div>
                       </div>
                       {isInstalled ? (
@@ -289,14 +291,13 @@ export function AuthModal({
         {/* Footer */}
         <div className="px-6 pb-6 pt-2">
           <p className="text-xs tracking-tight text-muted-foreground text-center leading-relaxed">
-            By connecting your wallet and using Superteam Academy, you agree to
-            our{" "}
+            {t("auth.termsAgree")}{" "}
             <Link href="/terms" className="text-primary hover:underline">
-              Terms of Service
+              {t("auth.termsOfService")}
             </Link>{" "}
             &{" "}
             <Link href="/privacy" className="text-primary hover:underline">
-              Privacy Policy
+              {t("auth.privacyPolicy")}
             </Link>
             .
           </p>

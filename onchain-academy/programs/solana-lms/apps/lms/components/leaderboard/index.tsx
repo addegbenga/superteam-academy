@@ -1,7 +1,9 @@
+"use client"
 import { Trophy, Flame, Zap, Award } from "lucide-react";
 import { Card, CardContent } from "@workspace/ui/components/card";
 import { Avatar, AvatarFallback } from "@workspace/ui/components/avatar";
 import { Badge } from "@workspace/ui/components/badge";
+import { useI18n } from "@/lib/i18n";
 
 const LEADERBOARD_DATA = [
   {
@@ -70,14 +72,16 @@ const LEADERBOARD_DATA = [
 ];
 
 export default function Leaderboard() {
+  const { t } = useI18n();
   return (
     <div className="container mx-auto px-4 py-12 max-w-4xl">
       <div className="text-center mb-12">
         <h1 className="text-4xl font-heading font-bold mb-4 flex items-center justify-center gap-4">
-          <Trophy className="w-10 h-10 text-yellow-400" /> Global Leaderboard
+          <Trophy className="w-10 h-10 text-yellow-400" />{" "}
+          {t("leaderboard.globalLeaderboard")}
         </h1>
         <p className="text-muted-foreground text-lg">
-          Top developers building on the frontier of Solana.
+          {t("leaderboard.topDevelopers")}
         </p>
       </div>
 
@@ -94,16 +98,16 @@ export default function Leaderboard() {
               <thead>
                 <tr className="border-b border-white/10 bg-white/5">
                   <th className="px-6 py-4 text-xs font-bold uppercase tracking-widest text-muted-foreground">
-                    Rank
+                    {t("leaderboard.rank")}
                   </th>
                   <th className="px-6 py-4 text-xs font-bold uppercase tracking-widest text-muted-foreground">
-                    User
+                    {t("leaderboard.user")}
                   </th>
                   <th className="px-6 py-4 text-xs font-bold uppercase tracking-widest text-muted-foreground text-center">
-                    Level
+                    {t("leaderboard.level")}
                   </th>
                   <th className="px-6 py-4 text-xs font-bold uppercase tracking-widest text-muted-foreground text-center">
-                    Streak
+                    {t("leaderboard.streak")}
                   </th>
                   <th className="px-6 py-4 text-xs font-bold uppercase tracking-widest text-muted-foreground text-right">
                     XP
@@ -149,7 +153,7 @@ export default function Leaderboard() {
                             )}
                           </div>
                           <div className="text-xs text-muted-foreground">
-                            Full Stack Developer
+                            {t("leaderboard.fullStackDeveloper")}
                           </div>
                         </div>
                       </div>
