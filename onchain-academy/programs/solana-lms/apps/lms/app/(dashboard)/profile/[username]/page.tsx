@@ -1,5 +1,5 @@
-import DashboardHome from "@/components/home";
+import ProfilePage from "@/components/profile";
 
 export default function Page() {
-  return <DashboardHome />;
+  return <ProfilePage />;
 }

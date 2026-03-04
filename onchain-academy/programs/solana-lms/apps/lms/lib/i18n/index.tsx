@@ -12,8 +12,6 @@ import {
 import { useSearchParams, useRouter, usePathname } from "next/navigation";
 import translations from "./translations.json";
 
-
-
 export type Locale = "en" | "es" | "pt" | "id";
 
 export const LOCALES: { code: Locale; name: string; flag: string }[] = [
@@ -44,36 +42,39 @@ function getNestedValue(obj: any, path: string): string | undefined {
   return typeof result === "string" ? result : undefined;
 }
 
-export function I18nProvider({
-  children,
-}: {
-  children: ReactNode;
-}): JSX.Element {
+function resolveInitialLocale(urlLang: string | null): Locale {
+  if (urlLang && urlLang in translations) return urlLang as Locale;
+  const stored = localStorage.getItem("locale");
+  if (stored && stored in translations) return stored as Locale;
+  const browser = navigator.language.split("-")[0];
+  if (browser!! in translations) return browser as Locale;
+  return "en";
+}
+
+export function I18nProvider({ children }: { children: ReactNode }): JSX.Element {
   const searchParams = useSearchParams();
   const router = useRouter();
   const pathname = usePathname();
 
   const [locale, setLocaleState] = useState<Locale>("en");
 
+  // On mount: resolve locale and ensure ?lang= is in the URL (only once)
   useEffect(() => {
-    const stored = localStorage.getItem("locale") as Locale | null;
-    if (stored && translations[stored]) {
-      setLocaleState(stored);
-    } else {
-      const browserLang = navigator.language.split("-")[0] as Locale;
-      if (translations[browserLang]) {
-        setLocaleState(browserLang);
-      }
-    }
-  }, []);
+    const urlLang = searchParams.get("lang");
+    const resolved = resolveInitialLocale(urlLang);
+    setLocaleState(resolved);
+    localStorage.setItem("locale", resolved);
 
-  useEffect(() => {
-    const urlLocale = searchParams.get("lang") as Locale | null;
-    if (urlLocale && translations[urlLocale] && urlLocale !== locale) {
-      setLocaleState(urlLocale);
+    // Only write to URL if lang param is missing or wrong — never on every render
+    if (urlLang !== resolved) {
+      const params = new URLSearchParams(searchParams.toString());
+      params.set("lang", resolved);
+      // replaceState directly — zero re-render, zero Next.js compilation trigger
+      window.history.replaceState(null, "", `${pathname}?${params.toString()}`);
     }
-  }, [searchParams, locale]);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
+  // When user explicitly switches language
   const setLocale = useCallback(
     (newLocale: Locale) => {
       setLocaleState(newLocale);
@@ -82,6 +83,7 @@ export function I18nProvider({
       const params = new URLSearchParams(searchParams.toString());
       params.set("lang", newLocale);
 
+      // router.push so CMS fetches re-run on the new locale
       router.push(`${pathname}?${params.toString()}`);
     },
     [router, pathname, searchParams],
@@ -92,7 +94,7 @@ export function I18nProvider({
       const translation = getNestedValue(translations[locale], key);
 
       if (!translation) {
-        const fallback = getNestedValue(translations.en, key);
+        const fallback = getNestedValue(translations["en"], key);
         if (!fallback) {
           console.warn(`Missing translation for key: ${key}`);
           return key;

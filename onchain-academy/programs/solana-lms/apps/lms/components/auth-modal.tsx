@@ -171,7 +171,7 @@ export function AuthModal({
       >
         <DialogTitle>{""}</DialogTitle>
         {/* Header with Logo */}
-        <div className="flex flex-col items-center pt-12 pb-8 px-6">
+        <Link href="/" className="flex flex-col items-center pt-12 pb-8 px-6">
           <svg
             width="65"
             height="65"
@@ -212,7 +212,7 @@ export function AuthModal({
           <p className="text-sm tracking-tight text-muted-foreground mt-2">
             {t("auth.connectWalletStart")}
           </p>
-        </div>
+        </Link>
 
         {/* Wallet Options */}
         <div className="px-4 pb-6">

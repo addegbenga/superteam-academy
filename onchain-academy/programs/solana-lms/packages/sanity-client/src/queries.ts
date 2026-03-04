@@ -225,6 +225,41 @@ export const queries = {
     stats
   }`,
 
+  searchCoursesQuery: `*[
+  _type == "course"
+  && status == "published"
+  && language == $filter.language
+  && (
+    $filter.query == ""
+    || title match $filter.query + "*"
+    || description match $filter.query + "*"
+    || $filter.query in tags
+  )
+  && (count($filter.difficulties) == 0 || difficulty in $filter.difficulties)
+  && (count($filter.tracks) == 0 || track in $filter.tracks)
+] | order(_createdAt desc) {
+  _id,
+  title,
+  slug,
+  description,
+  difficulty,
+  duration,
+  xpReward,
+  track,
+  language,
+  "thumbnail": thumbnail.asset->url,
+  tags,
+  stats,
+  "moduleCount": count(modules),
+  "lessonCount": count(modules[]->lessons[]),
+  "instructors": instructors[]-> {
+    _id,
+    name,
+    "avatar": avatar.asset->url,
+    role
+  }
+}`,
+
   // Get featured/recommended courses
   featuredCourses: `*[_type == "course" && status == "published" && language == $language] | order(_createdAt desc) [0...6] {
     _id,

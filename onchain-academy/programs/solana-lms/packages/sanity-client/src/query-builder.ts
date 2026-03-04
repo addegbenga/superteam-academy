@@ -23,6 +23,7 @@ type QueryParams = {
   moduleId?: string;
   category?: string;
   type?: string;
+  filter?: any;
 };
 // ==================== SPECIALIZED RETURN TYPES ====================
 
@@ -167,6 +168,21 @@ export class QueryBuilder {
     return this.execute<Course[]>("searchCourses", { searchQuery, language });
   }
 
+  async searchCoursesQuery(
+    language?: SupportedLanguage,
+    searchQuery: string = "",
+    filter?: { difficulties?: string[]; tracks?: string[] },
+  ): Promise<Course[]> {
+    return this.execute<Course[]>("searchCoursesQuery", {
+      filter: {
+        language: language ?? "en",
+        query: searchQuery.trim(),
+        difficulties: filter?.difficulties ?? [],
+        tracks: filter?.tracks ?? [],
+      },
+    });
+  }
+
   async getFeaturedCourses(language?: SupportedLanguage): Promise<Course[]> {
     return this.execute<Course[]>("featuredCourses", { language });
   }
@@ -227,8 +243,8 @@ export class QueryBuilder {
     return this.execute<Lesson>("lessonPreview", { id });
   }
   async getLessonsByCourse(courseSlug: string): Promise<Lesson[]> {
-  return this.execute<Lesson[]>("lessonsByCourse", { slug: courseSlug });
-}
+    return this.execute<Lesson[]>("lessonsByCourse", { slug: courseSlug });
+  }
 
   async getAdjacentLessons(moduleId: string): Promise<AdjacentLessonsResponse> {
     return this.execute<AdjacentLessonsResponse>("getAdjacentLessons", {

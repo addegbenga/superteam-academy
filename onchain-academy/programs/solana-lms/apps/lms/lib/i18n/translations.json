@@ -20,7 +20,13 @@
       "disconnect": "Disconnect",
       "copy": "Copy",
       "copied": "Copied!",
-      "viewOnSolscan": "View on Solscan"
+      "viewOnSolscan": "View on Solscan",
+      "download": "Download",
+      "share": "Share",
+      "xp": "XP",
+      "unlocked": "Unlocked",
+      "details": "Details",
+      "settings": "Settings"
     },
     "nav": {
       "courses": "Courses",
@@ -64,7 +70,8 @@
       "todayNoActivity": "Today — no activity yet",
       "future": "Future",
       "noActivity": "No activity",
-      "achievementUnlocked": "unlocked"
+      "achievementUnlocked": "unlocked",
+      "complete": "Complete"
     },
     "courses": {
       "courseCatalog": "Course Catalog",
@@ -133,11 +140,98 @@
       "fullStackDeveloper": "Full Stack Developer"
     },
     "profile": {
+      "profile": "Profile",
+      "manageYourProfile": "Manage your profile and achievements",
+      "public": "Public",
+      "private": "Private",
+      "overview": "Overview",
+      "credentials": "Credentials",
+      "achievements": "Achievements",
+      "completedCourses": "Completed Courses",
       "onChainCredentials": "On-Chain Credentials",
       "nftBadges": "NFT Badges",
       "achievementShowcase": "Achievement Showcase",
       "totalXP": "Total XP",
-      "rank": "Rank"
+      "rank": "Rank",
+      "editProfile": "Edit profile",
+      "description": "Full-stack developer building on Solana. Passionate about DeFi and high-performance rust.",
+      "joined": "Joined",
+      "xp": "XP",
+      "levelShort": "Lvl",
+      "level": "Level",
+      "streak": "Streak",
+      "skills": "Skills",
+      "nfts": "NFTs",
+      "credentialDescription": "Your credential NFTs represent completed learning tracks. These are soulbound and cannot be transferred.",
+      "achievementDescription": "Unlock achievements by completing courses, maintaining streaks, and mastering skills.",
+      "locked": "Locked",
+      "completedCoursesDescription": "All courses you have successfully completed.",
+      "completedOn": "Completed",
+      "earned": "Earned",
+      "viewCertificate": "View Certificate"
+    },
+    "settings": {
+      "title": "Settings",
+      "subtitle": "Manage your account and preferences",
+      "profile": {
+        "title": "Profile",
+        "name": "Full Name",
+        "namePlaceholder": "Enter your full name",
+        "bio": "Bio",
+        "bioPlaceholder": "Tell us about yourself",
+        "avatar": "Profile Picture",
+        "avatarUpload": "Click to upload or drag and drop",
+        "avatarHelp": "PNG, JPG or GIF (Max. 5MB)"
+      },
+      "account": {
+        "title": "Account",
+        "email": "Email Address",
+        "emailPlaceholder": "your@email.com",
+        "connectedWallets": "Connected Wallets",
+        "connectWallet": "Connect Wallet",
+        "disconnectWallet": "Disconnect",
+        "googleConnect": "Connect with Google",
+        "githubConnect": "Connect with GitHub",
+        "noWalletsConnected": "No wallets connected yet"
+      },
+      "preferences": {
+        "title": "Preferences",
+        "language": "Language",
+        "theme": "Theme",
+        "themeLight": "Light",
+        "themeDark": "Dark",
+        "themeAuto": "Auto",
+        "notifications": "Notifications",
+        "emailNotifications": "Email Notifications",
+        "pushNotifications": "Push Notifications"
+      },
+      "privacy": {
+        "title": "Privacy & Security",
+        "profileVisibility": "Profile Visibility",
+        "profilePublic": "Public - Anyone can see your profile",
+        "profilePrivate": "Private - Only you can see your profile",
+        "dataExport": "Data Export",
+        "exportDescription": "Download a copy of your data",
+        "exportData": "Export Data",
+        "deleteAccount": "Delete Account",
+        "deleteDescription": "Permanently delete your account and all data",
+        "deleteWarning": "This action cannot be undone"
+      }
+    },
+    "certificate": {
+      "certificate": "Certificate",
+      "recipient": "Recipient",
+      "course": "Course",
+      "completedDate": "Completed On",
+      "mintAddress": "Mint Address",
+      "verifyOnchain": "Verify On-Chain",
+      "shareOn": "Share On",
+      "downloadImage": "Download Certificate",
+      "ownership": "Ownership",
+      "metadata": "Metadata",
+      "contractAddress": "Contract Address",
+      "tokenId": "Token ID",
+      "blockNumber": "Block Number"
     },
     "auth": {
       "welcomeToSolex": "Welcome to Solex",
@@ -178,7 +272,13 @@
       "disconnect": "Desconectar",
       "copy": "Copiar",
       "copied": "¡Copiado!",
-      "viewOnSolscan": "Ver en Solscan"
+      "viewOnSolscan": "Ver en Solscan",
+      "download": "Descargar",
+      "share": "Compartir",
+      "xp": "XP",
+      "unlocked": "Desbloqueado",
+      "details": "Detalles",
+      "settings": "Configuración"
     },
     "nav": {
       "courses": "Cursos",
@@ -222,7 +322,8 @@
       "todayNoActivity": "Hoy — sin actividad aún",
       "future": "Futuro",
       "noActivity": "Sin actividad",
-      "achievementUnlocked": "desbloqueado"
+      "achievementUnlocked": "desbloqueado",
+      "complete": "Completar"
     },
     "courses": {
       "courseCatalog": "Catálogo de Cursos",
@@ -291,11 +392,98 @@
       "fullStackDeveloper": "Desarrollador Full Stack"
     },
     "profile": {
+      "profile": "Perfil",
+      "manageYourProfile": "Administra tu perfil y logros",
+      "public": "Público",
+      "private": "Privado",
+      "overview": "Resumen",
+      "credentials": "Credenciales",
+      "achievements": "Logros",
+      "completedCourses": "Cursos Completados",
       "onChainCredentials": "Credenciales On-Chain",
       "nftBadges": "Insignias NFT",
       "achievementShowcase": "Vitrina de Logros",
       "totalXP": "XP Total",
-      "rank": "Rango"
+      "rank": "Rango",
+      "editProfile": "Editar perfil",
+      "description": "Desarrollador full-stack construyendo en Solana. Apasionado por DeFi y Rust de alto rendimiento.",
+      "joined": "Se unió",
+      "xp": "XP",
+      "levelShort": "Nivel",
+      "level": "Nivel",
+      "streak": "Racha",
+      "skills": "Habilidades",
+      "nfts": "NFTs",
+      "credentialDescription": "Tus NFTs de credenciales representan pistas de aprendizaje completadas. Estos son vinculados al alma y no pueden ser transferidos.",
+      "achievementDescription": "Desbloquea logros completando cursos, manteniendo rachas y dominando habilidades.",
+      "locked": "Bloqueado",
+      "completedCoursesDescription": "Todos los cursos que has completado exitosamente.",
+      "completedOn": "Completado",
+      "earned": "Ganado",
+      "viewCertificate": "Ver Certificado"
+    },
+    "settings": {
+      "title": "Configuración",
+      "subtitle": "Gestiona tu cuenta y preferencias",
+      "profile": {
+        "title": "Perfil",
+        "name": "Nombre Completo",
+        "namePlaceholder": "Ingresa tu nombre completo",
+        "bio": "Biografía",
+        "bioPlaceholder": "Cuéntanos sobre ti",
+        "avatar": "Foto de Perfil",
+        "avatarUpload": "Haz clic para cargar o arrastra y suelta",
+        "avatarHelp": "PNG, JPG o GIF (Máx. 5MB)"
+      },
+      "account": {
+        "title": "Cuenta",
+        "email": "Correo Electrónico",
+        "emailPlaceholder": "tu@email.com",
+        "connectedWallets": "Carteras Conectadas",
+        "connectWallet": "Conectar Cartera",
+        "disconnectWallet": "Desconectar",
+        "googleConnect": "Conectar con Google",
+        "githubConnect": "Conectar con GitHub",
+        "noWalletsConnected": "Sin carteras conectadas aún"
+      },
+      "preferences": {
+        "title": "Preferencias",
+        "language": "Idioma",
+        "theme": "Tema",
+        "themeLight": "Claro",
+        "themeDark": "Oscuro",
+        "themeAuto": "Automático",
+        "notifications": "Notificaciones",
+        "emailNotifications": "Notificaciones por Correo",
+        "pushNotifications": "Notificaciones Push"
+      },
+      "privacy": {
+        "title": "Privacidad y Seguridad",
+        "profileVisibility": "Visibilidad del Perfil",
+        "profilePublic": "Público - Cualquiera puede ver tu perfil",
+        "profilePrivate": "Privado - Solo tú puedes ver tu perfil",
+        "dataExport": "Exportar Datos",
+        "exportDescription": "Descarga una copia de tus datos",
+        "exportData": "Exportar Datos",
+        "deleteAccount": "Eliminar Cuenta",
+        "deleteDescription": "Elimina permanentemente tu cuenta y todos tus datos",
+        "deleteWarning": "Esta acción no se puede deshacer"
+      }
+    },
+    "certificate": {
+      "certificate": "Certificado",
+      "recipient": "Destinatario",
+      "course": "Curso",
+      "completedDate": "Completado el",
+      "mintAddress": "Dirección de Acuñación",
+      "verifyOnchain": "Verificar En Cadena",
+      "shareOn": "Compartir en",
+      "downloadImage": "Descargar Certificado",
+      "ownership": "Propiedad",
+      "metadata": "Metadatos",
+      "contractAddress": "Dirección del Contrato",
+      "tokenId": "ID del Token",
+      "blockNumber": "Número de Bloque"
     },
     "auth": {
       "welcomeToSolex": "Bienvenido a Solex",
@@ -336,7 +524,13 @@
       "disconnect": "Desconectar",
       "copy": "Copiar",
       "copied": "Copiado!",
-      "viewOnSolscan": "Ver no Solscan"
+      "viewOnSolscan": "Ver no Solscan",
+      "download": "Baixar",
+      "share": "Compartilhar",
+      "xp": "XP",
+      "unlocked": "Desbloqueado",
+      "details": "Detalhes",
+      "settings": "Configurações"
     },
     "nav": {
       "courses": "Cursos",
@@ -380,7 +574,8 @@
       "todayNoActivity": "Hoje — sem atividade ainda",
       "future": "Futuro",
       "noActivity": "Sem atividade",
-      "achievementUnlocked": "desbloqueado"
+      "achievementUnlocked": "desbloqueado",
+      "complete": "Completo"
     },
     "courses": {
       "courseCatalog": "Catálogo de Cursos",
@@ -449,11 +644,98 @@
       "fullStackDeveloper": "Desenvolvedor Full Stack"
     },
     "profile": {
+      "profile": "Perfil",
+      "manageYourProfile": "Gerencie seu perfil e conquistas",
+      "public": "Público",
+      "private": "Privado",
+      "overview": "Visão Geral",
+      "credentials": "Credenciais",
+      "achievements": "Conquistas",
+      "completedCourses": "Cursos Concluídos",
       "onChainCredentials": "Credenciais On-Chain",
       "nftBadges": "Insígnias NFT",
       "achievementShowcase": "Vitrine de Conquistas",
       "totalXP": "XP Total",
-      "rank": "Posição"
+      "rank": "Posição",
+      "editProfile": "Editar perfil",
+      "description": "Desenvolvedor Full-stack construindo na Solana. Apaixonado por DeFi e Rust de alto desempenho.",
+      "joined": "Ingressou",
+      "xp": "XP",
+      "levelShort": "Nível",
+      "level": "Nível",
+      "streak": "Sequência",
+      "skills": "Habilidades",
+      "nfts": "NFTs",
+      "credentialDescription": "Seus NFTs de credenciais representam trilhas de aprendizado concluídas. Estes são vinculados à alma e não podem ser transferidos.",
+      "achievementDescription": "Desbloqueie conquistas completando cursos, mantendo sequências e dominando habilidades.",
+      "locked": "Bloqueado",
+      "completedCoursesDescription": "Todos os cursos que você completou com sucesso.",
+      "completedOn": "Concluído",
+      "earned": "Ganho",
+      "viewCertificate": "Ver Certificado"
+    },
+    "settings": {
+      "title": "Configurações",
+      "subtitle": "Gerencie sua conta e preferências",
+      "profile": {
+        "title": "Perfil",
+        "name": "Nome Completo",
+        "namePlaceholder": "Digite seu nome completo",
+        "bio": "Bio",
+        "bioPlaceholder": "Conte-nos sobre você",
+        "avatar": "Foto do Perfil",
+        "avatarUpload": "Clique para enviar ou arraste e solte",
+        "avatarHelp": "PNG, JPG ou GIF (Máx. 5MB)"
+      },
+      "account": {
+        "title": "Conta",
+        "email": "Endereço de Email",
+        "emailPlaceholder": "seu@email.com",
+        "connectedWallets": "Carteiras Conectadas",
+        "connectWallet": "Conectar Carteira",
+        "disconnectWallet": "Desconectar",
+        "googleConnect": "Conectar com Google",
+        "githubConnect": "Conectar com GitHub",
+        "noWalletsConnected": "Nenhuma carteira conectada ainda"
+      },
+      "preferences": {
+        "title": "Preferências",
+        "language": "Idioma",
+        "theme": "Tema",
+        "themeLight": "Claro",
+        "themeDark": "Escuro",
+        "themeAuto": "Automático",
+        "notifications": "Notificações",
+        "emailNotifications": "Notificações por Email",
+        "pushNotifications": "Notificações Push"
+      },
+      "privacy": {
+        "title": "Privacidade e Segurança",
+        "profileVisibility": "Visibilidade do Perfil",
+        "profilePublic": "Público - Qualquer pessoa pode ver seu perfil",
+        "profilePrivate": "Privado - Apenas você pode ver seu perfil",
+        "dataExport": "Exportar Dados",
+        "exportDescription": "Baixe uma cópia de seus dados",
+        "exportData": "Exportar Dados",
+        "deleteAccount": "Deletar Conta",
+        "deleteDescription": "Exclua permanentemente sua conta e todos os dados",
+        "deleteWarning": "Esta ação não pode ser desfeita"
+      }
+    },
+    "certificate": {
+      "certificate": "Certificado",
+      "recipient": "Destinatário",
+      "course": "Curso",
+      "completedDate": "Concluído em",
+      "mintAddress": "Endereço de Mint",
+      "verifyOnchain": "Verificar On-Chain",
+      "shareOn": "Compartilhar em",
+      "downloadImage": "Baixar Certificado",
+      "ownership": "Propriedade",
+      "metadata": "Metadados",
+      "contractAddress": "Endereço do Contrato",
+      "tokenId": "ID do Token",
+      "blockNumber": "Número do Bloco"
     },
     "auth": {
       "welcomeToSolex": "Bem-vindo ao Solex",
@@ -494,7 +776,13 @@
       "disconnect": "Putuskan",
       "copy": "Salin",
       "copied": "Disalin!",
-      "viewOnSolscan": "Lihat di Solscan"
+      "viewOnSolscan": "Lihat di Solscan",
+      "download": "Unduh",
+      "share": "Bagikan",
+      "xp": "XP",
+      "unlocked": "Terbuka",
+      "details": "Detail",
+      "settings": "Pengaturan"
     },
     "nav": {
       "courses": "Kursus",
@@ -538,7 +826,8 @@
       "todayNoActivity": "Hari ini — belum ada aktivitas",
       "future": "Masa depan",
       "noActivity": "Tidak ada aktivitas",
-      "achievementUnlocked": "terbuka"
+      "achievementUnlocked": "terbuka",
+      "complete": "Selesai"
     },
     "courses": {
       "courseCatalog": "Katalog Kursus",
@@ -607,11 +896,98 @@
       "fullStackDeveloper": "Pengembang Full Stack"
     },
     "profile": {
+      "profile": "Profil",
+      "manageYourProfile": "Kelola profil dan pencapaian Anda",
+      "public": "Publik",
+      "private": "Pribadi",
+      "overview": "Ikhtisar",
+      "credentials": "Kredensial",
+      "achievements": "Pencapaian",
+      "completedCourses": "Kursus Selesai",
       "onChainCredentials": "Kredensial On-Chain",
       "nftBadges": "Lencana NFT",
       "achievementShowcase": "Pameran Pencapaian",
       "totalXP": "Total XP",
-      "rank": "Peringkat"
+      "rank": "Peringkat",
+      "editProfile": "Edit profil",
+      "description": "Pengembang full-stack membangun di Solana. Bersemangat tentang DeFi dan Rust berkinerja tinggi.",
+      "joined": "Bergabung",
+      "xp": "XP",
+      "levelShort": "Level",
+      "level": "Level",
+      "streak": "Seri",
+      "skills": "Keterampilan",
+      "nfts": "NFTs",
+      "credentialDescription": "NFT kredensial Anda mewakili jalur pembelajaran yang diselesaikan. Ini terikat pada jiwa dan tidak dapat ditransfer.",
+      "achievementDescription": "Buka pencapaian dengan menyelesaikan kursus, mempertahankan seri, dan menguasai keterampilan.",
+      "locked": "Terkunci",
+      "completedCoursesDescription": "Semua kursus yang telah Anda selesaikan dengan berhasil.",
+      "completedOn": "Selesai",
+      "earned": "Diperoleh",
+      "viewCertificate": "Lihat Sertifikat"
+    },
+    "settings": {
+      "title": "Pengaturan",
+      "subtitle": "Kelola akun dan preferensi Anda",
+      "profile": {
+        "title": "Profil",
+        "name": "Nama Lengkap",
+        "namePlaceholder": "Masukkan nama lengkap Anda",
+        "bio": "Bio",
+        "bioPlaceholder": "Ceritakan tentang Anda",
+        "avatar": "Foto Profil",
+        "avatarUpload": "Klik untuk mengunggah atau seret dan lepaskan",
+        "avatarHelp": "PNG, JPG atau GIF (Maks. 5MB)"
+      },
+      "account": {
+        "title": "Akun",
+        "email": "Alamat Email",
+        "emailPlaceholder": "anda@email.com",
+        "connectedWallets": "Dompet Terhubung",
+        "connectWallet": "Hubungkan Dompet",
+        "disconnectWallet": "Putuskan Sambungan",
+        "googleConnect": "Hubungkan dengan Google",
+        "githubConnect": "Hubungkan dengan GitHub",
+        "noWalletsConnected": "Tidak ada dompet yang terhubung"
+      },
+      "preferences": {
+        "title": "Preferensi",
+        "language": "Bahasa",
+        "theme": "Tema",
+        "themeLight": "Terang",
+        "themeDark": "Gelap",
+        "themeAuto": "Otomatis",
+        "notifications": "Notifikasi",
+        "emailNotifications": "Notifikasi Email",
+        "pushNotifications": "Notifikasi Push"
+      },
+      "privacy": {
+        "title": "Privasi & Keamanan",
+        "profileVisibility": "Visibilitas Profil",
+        "profilePublic": "Publik - Siapa pun dapat melihat profil Anda",
+        "profilePrivate": "Pribadi - Hanya Anda yang dapat melihat profil Anda",
+        "dataExport": "Ekspor Data",
+        "exportDescription": "Unduh salinan data Anda",
+        "exportData": "Ekspor Data",
+        "deleteAccount": "Hapus Akun",
+        "deleteDescription": "Hapus permanen akun dan semua data Anda",
+        "deleteWarning": "Tindakan ini tidak dapat dibatalkan"
+      }
+    },
+    "certificate": {
+      "certificate": "Sertifikat",
+      "recipient": "Penerima",
+      "course": "Kursus",
+      "completedDate": "Selesai Pada",
+      "mintAddress": "Alamat Mint",
+      "verifyOnchain": "Verifikasi On-Chain",
+      "shareOn": "Bagikan di",
+      "downloadImage": "Unduh Sertifikat",
+      "ownership": "Kepemilikan",
+      "metadata": "Metadata",
+      "contractAddress": "Alamat Kontrak",
+      "tokenId": "ID Token",
+      "blockNumber": "Nomor Blok"
     },
     "auth": {
       "welcomeToSolex": "Selamat datang di Solex",

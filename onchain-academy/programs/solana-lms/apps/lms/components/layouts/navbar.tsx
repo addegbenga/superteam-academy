@@ -29,7 +29,6 @@ export function Navbar() {
     { label: t("nav.courses"), href: "/course" },
     { label: t("nav.leaderboard"), href: "/leaderboard" },
     { label: t("nav.profile"), href: "/profile" },
-    { label: t("nav.certificates"), href: "/certificate" },
   ];
 
   const isActive = (href: string) =>

@@ -1,5 +1,5 @@
-import DashboardHome from "@/components/home";
+import CertificateById from "@/components/certificates/certById";
 
 export default function Page() {
-  return <DashboardHome />;
+  return <CertificateById/>
 }

@@ -1,11 +1,11 @@
 "use client";
 import {
-  Wallet,
   Copy,
   ExternalLink,
   LogOut,
   ChevronDown,
   CheckCircle2,
+  Settings,
 } from "lucide-react";
 import { useState } from "react";
 import { Button } from "@workspace/ui/components/button";
@@ -18,6 +18,7 @@ import { useWallet } from "@solana/wallet-adapter-react";
 import { cn } from "@workspace/ui/lib/utils";
 import { useAuth } from "./providers/auth-provider";
 import { useI18n } from "@/lib/i18n";
+import Link from "next/link";
 
 export function WalletPopover() {
   const { publicKey, disconnect, connected } = useWallet();
@@ -132,6 +133,16 @@ export function WalletPopover() {
               {t("common.viewOnSolscan")}
             </span>
           </a>
+
+          <Link
+            href={`/settings`}
+            className="flex items-center gap-3 w-full px-3 py-2.5 rounded-xl hover:bg-white/5 transition-colors group"
+          >
+            <Settings className="w-4 h-4 text-white/40 group-hover:text-white/70 transition-colors" />
+            <span className="text-sm text-white/70 group-hover:text-white transition-colors">
+              {t("common.settings")}
+            </span>
+          </Link>
 
           <div className="my-1 h-px bg-white/5 mx-2" />
 

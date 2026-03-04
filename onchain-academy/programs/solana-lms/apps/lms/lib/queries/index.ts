@@ -14,6 +14,8 @@ export const queryKeys = {
     stats: (courseId: string) =>
       [...queryKeys.courses.all, "stats", courseId] as const,
     byIds: (ids: string[]) => ["courses", "byIds", ...ids.sort()] as const,
+    search: (language: string, query: string, filters: any) =>
+      [...queryKeys.courses.all, "search", language, query, filters] as const,
   },
 
   // Lessons
@@ -84,6 +86,13 @@ export const courseQueries = {
     queryOptions({
       queryKey: queryKeys.courses.all,
       queryFn: () => queryBuilder.getCourses(lang),
+      staleTime: staleTime,
+    }),
+
+  search: (language: any, query: string = "", filters: any = {}) =>
+    queryOptions({
+      queryKey: queryKeys.courses.search(language, query, filters),
+      queryFn: () => queryBuilder.searchCoursesQuery(language, query, filters),
       staleTime: staleTime,
     }),
 };
