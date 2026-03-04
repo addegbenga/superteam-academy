@@ -149,17 +149,17 @@ export default function Home() {
         <div className="container mx-auto px-4">
           <div className="grid md:grid-cols-3 gap-8">
             <FeatureCard
-              icon={<Code className="w-8 h-8 text-primary" />}
+              icon={<Code  />}
               title="Interactive Coding"
               description="Write, test, and deploy Rust smart contracts directly in your browser. No setup required."
             />
             <FeatureCard
-              icon={<Trophy className="w-8 h-8 text-secondary" />}
+              icon={<Trophy />}
               title="On-Chain Rewards"
               description="Earn verifiable XP tokens and NFTs for completing lessons and challenges."
             />
             <FeatureCard
-              icon={<Users className="w-8 h-8 text-blue-400" />}
+              icon={<Users />}
               title="Community Bounties"
               description="Graduates get access to exclusive paid opportunities from top Solana projects."
             />
