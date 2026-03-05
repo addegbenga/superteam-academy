@@ -5,18 +5,22 @@ import { courseQueries, lessonQueries } from "@/lib/queries";
 
 export default async function CoursePage({
   params,
+  searchParams,
 }: {
   params: Promise<{ [key: string]: string }>;
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }) {
   const resolvedParams = await params;
   const queryClient = getQueryClient();
   const courseId = resolvedParams.courseId as string;
   const lessonSlug = resolvedParams.courseLessonId?.[0] as string;
+  const resolvedSearchParams = await searchParams;
+  const language = resolvedSearchParams.language as string;
 
   // Parallel prefetch - both fire at the same time
   await Promise.all([
-    queryClient.prefetchQuery(courseQueries.bySlug(courseId)),
-    queryClient.prefetchQuery(lessonQueries.bySlug(lessonSlug)),
+    queryClient.prefetchQuery(courseQueries.bySlug(courseId, language)),
+    queryClient.prefetchQuery(lessonQueries.bySlug(lessonSlug, language)),
   ]);
 
   return (

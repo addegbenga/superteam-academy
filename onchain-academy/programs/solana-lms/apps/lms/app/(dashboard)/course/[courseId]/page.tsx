@@ -3,26 +3,27 @@ import CourseDetail from "@/components/course/course-detail";
 import { getQueryClient } from "@/components/providers/query-client";
 import { courseQueries } from "@/lib/queries";
 import { Suspense } from "react";
+import { CourseDetailSkeleton } from "@workspace/ui/components/loading";
 
 export default async function CoursePage({
   params,
-  searchParams
+  searchParams,
 }: {
   params: Promise<{ [key: string]: string }>;
-    searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }) {
   const resolvedParams = await params;
-    const resolvedSearchParams = await searchParams;
+  const resolvedSearchParams = await searchParams;
   const queryClient = getQueryClient();
   const courseId = resolvedParams.courseId as string;
-    const language = resolvedSearchParams.lang as string;
+  const language = resolvedSearchParams.language as string;
 
   // Prefetch on server
-  await queryClient.prefetchQuery(courseQueries.bySlug(courseId, language));
+  queryClient.prefetchQuery(courseQueries.bySlug(courseId, language));
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
-      <Suspense>
+      <Suspense fallback={<CourseDetailSkeleton />}>
         <CourseDetail />
       </Suspense>
     </HydrationBoundary>

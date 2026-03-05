@@ -11,7 +11,7 @@ export function useCourseParams() {
   const searchParams = useSearchParams();
   const [, startTransition] = useTransition();
 
-  const language = searchParams.get("lang") as string;
+  const language = searchParams.get("language") as string;
   const query = searchParams.get("q") ?? "";
   const difficulties = searchParams.getAll("difficulty");
   const tracks = searchParams.getAll("track");

@@ -98,11 +98,10 @@ export default function Course() {
 
   const courseSlug = params.courseId as string;
   const lessonSlug = params.courseLessonId?.[0] as string;
-  const language = searchParams.get("lang") as string;
+  const language = searchParams.get("language") as string;
   const { userId } = getCurrentUserId();
   const [showCodeEditor, setShowCodeEditor] = useState(false);
   const { completeLesson } = useCourse(courseSlug);
-  const { t } = useI18n();
 
   const { data: course } = useQuery(courseQueries.bySlug(courseSlug, language));
   const { data: progress } = useQuery(

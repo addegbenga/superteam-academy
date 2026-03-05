@@ -2,6 +2,7 @@ import { PublicKey } from "@solana/web3.js";
 import { queryOptions } from "@tanstack/react-query";
 import { learningService } from "@workspace/learning-service";
 import { queryBuilder } from "@workspace/sanity-client";
+import { toLocalizedSlug } from "../helper";
 
 export const queryKeys = {
   // Courses
@@ -71,7 +72,7 @@ export const courseQueries = {
   bySlug: (slug: string, language?: any) =>
     queryOptions({
       queryKey: queryKeys.courses.detail(slug, language),
-      queryFn: () => queryBuilder.getCourseBySlug(slug, language),
+      queryFn: () => queryBuilder.getCourseBySlug(toLocalizedSlug(slug, language), language),
       staleTime: staleTime,
     }),
   byIds: (ids: string[], language?: any) =>
@@ -103,7 +104,7 @@ export const lessonQueries = {
   bySlug: (slug: string, language?: string) =>
     queryOptions({
       queryKey: queryKeys.lessons.detail(slug, language),
-      queryFn: () => queryBuilder.getLessonBySlug(slug, language as any),
+      queryFn: () => queryBuilder.getLessonBySlug(toLocalizedSlug(slug, language), language as any),
       staleTime: staleTime,
     }),
 

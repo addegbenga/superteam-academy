@@ -209,7 +209,7 @@ export function useEnrolledCoursesWithDetails(userId: string) {
 
   return {
     data: enrolled as unknown as CourseProgressResponse,
-    isLoading: enrolledQuery.isLoading || coursesQuery.isLoading,
+    isLoading: enrolledQuery.isPending || coursesQuery.isPending,
     isError: enrolledQuery.isError || coursesQuery.isError,
   };
 }

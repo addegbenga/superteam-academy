@@ -1,6 +1,6 @@
 "use client";
 import { courseQueries } from "@/lib/queries";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useSuspenseQuery } from "@tanstack/react-query";
 import { Badge } from "@workspace/ui/components/badge";
 import { Button } from "@workspace/ui/components/button";
 import { Clock, Zap, AlertCircle } from "lucide-react";
@@ -18,7 +18,7 @@ export function CourseGrid() {
   const { t } = useI18n();
   const { language, query, difficulties, tracks } = useCourseParams();
 
-  const { data, isError, error, refetch, isFetching } = useQuery(
+  const { data, isError, error, refetch, isFetching } = useSuspenseQuery(
     courseQueries.search(language, query, { difficulties, tracks }),
   );
 

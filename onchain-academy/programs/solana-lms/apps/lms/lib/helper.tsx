@@ -154,3 +154,11 @@ export function cellStyle(cell: HeatmapCell, isToday: boolean, inFuture: boolean
   if (inFuture) return "bg-white/[0.03]";
   return "bg-white/[0.06]";
 }
+
+
+export const toLocalizedSlug = (slug: string, language?: string) => {
+  if (!language || language === "en") return slug;
+  // strip any existing suffix first, then append
+  const base = slug.replace(/-(?:en|es|pt)$/, "");
+  return `${base}-${language}`;
+};

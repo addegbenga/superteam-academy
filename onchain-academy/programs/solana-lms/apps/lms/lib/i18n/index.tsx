@@ -13,10 +13,9 @@ import {
 import { useSearchParams, useRouter, usePathname } from "next/navigation";
 import translations from "./translations.json";
 
-// Opt out of static rendering since we read searchParams at runtime
 export const dynamic = "force-dynamic";
 
-export type Locale = "en" | "es" | "pt" | "id";
+export type Locale = "en" | "es" | "pt";
 
 export const LOCALES: { code: Locale; name: string; flag: string }[] = [
   { code: "en", name: "English", flag: "🇺🇸" },
@@ -54,7 +53,6 @@ function resolveInitialLocale(urlLang: string | null): Locale {
   return "en";
 }
 
-// Inner component that actually calls useSearchParams — must be inside <Suspense>
 function I18nProviderInner({ children }: { children: ReactNode }): JSX.Element {
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -62,33 +60,41 @@ function I18nProviderInner({ children }: { children: ReactNode }): JSX.Element {
 
   const [locale, setLocaleState] = useState<Locale>("en");
 
-  // On mount: resolve locale and ensure ?lang= is in the URL (only once)
   useEffect(() => {
     const urlLang = searchParams.get("language");
     const resolved = resolveInitialLocale(urlLang);
     setLocaleState(resolved);
     localStorage.setItem("locale", resolved);
 
-    // Only write to URL if lang param is missing or wrong — never on every render
-    if (urlLang !== resolved) {
-      const params = new URLSearchParams(searchParams.toString());
+    const params = new URLSearchParams(searchParams.toString());
+    if (resolved === "en") {
+      params.delete("language");
+    } else {
       params.set("language", resolved);
-      // replaceState directly — zero re-render, zero Next.js compilation trigger
-      window.history.replaceState(null, "", `${pathname}?${params.toString()}`);
     }
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
-  // When user explicitly switches language
+    const queryString = params.toString();
+    window.history.replaceState(
+      null,
+      "",
+      queryString ? `${pathname}?${queryString}` : pathname,
+    );
+  }, [pathname]);
+
   const setLocale = useCallback(
     (newLocale: Locale) => {
       setLocaleState(newLocale);
       localStorage.setItem("locale", newLocale);
 
       const params = new URLSearchParams(searchParams.toString());
-      params.set("language", newLocale);
+      if (newLocale === "en") {
+        params.delete("language");
+      } else {
+        params.set("language", newLocale);
+      }
 
-      // router.push so CMS fetches re-run on the new locale
-      router.push(`${pathname}?${params.toString()}`);
+      const qs = params.toString();
+      router.push(qs ? `${pathname}?${qs}` : pathname);
     },
     [router, pathname, searchParams],
   );
@@ -122,9 +128,11 @@ function I18nProviderInner({ children }: { children: ReactNode }): JSX.Element {
   );
 }
 
-// Public provider wraps the inner component in Suspense, satisfying Next.js's
-// requirement that any component calling useSearchParams has a Suspense boundary.
-export function I18nProvider({ children }: { children: ReactNode }): JSX.Element {
+export function I18nProvider({
+  children,
+}: {
+  children: ReactNode;
+}): JSX.Element {
   return (
     <Suspense fallback={null}>
       <I18nProviderInner>{children}</I18nProviderInner>
@@ -134,9 +142,7 @@ export function I18nProvider({ children }: { children: ReactNode }): JSX.Element
 
 export function useI18n() {
   const context = useContext(I18nContext);
-  if (!context) {
-    throw new Error("useI18n must be used within an I18nProvider");
-  }
+  if (!context) throw new Error("useI18n must be used within an I18nProvider");
   return context;
 }
 
